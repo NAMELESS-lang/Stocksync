@@ -1,0 +1,115 @@
+
+
+body{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+h1{
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #8d0303;
+    color: #f5f5f5;
+    text-align: center;
+    font-size: 30px;
+}
+
+
+.h1_2{
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #003735;
+    color: #f5f5f5;
+    text-align: center;
+    font-size: 30px;
+}
+
+p{
+    background-color: gray;
+}
+
+header{
+    display: flex;
+    position: fixed;
+    justify-content: space-around;
+    top:0;
+    left: 0;          
+    z-index: 1000;
+    width: 100%;      
+    justify-content: center;
+    background-color: #003735;
+}
+
+.ola{
+    flex-grow: 1;
+    margin-top: 3%;
+    margin-left: 5%;
+    color: whitesmoke;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 30px;
+    background-color: #003735;
+}
+
+header a{
+    margin-top: 40px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    text-align: center;
+    padding-top: 15px;
+    text-decoration: none;
+    margin-right: 10%;
+    height: 40px;
+    width: 170px;
+    border-radius: 10px;
+    border: none;
+    font-size: 20px;
+    background-color: whitesmoke;
+}
+
+header a:hover {
+    color: #003735;
+    font-weight: bold;
+}
+
+
+img{
+    padding-left: 2%;
+}
+.a_imagem{
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    margin-top: 30px;
+}
+.container{
+    margin-top: 15%;
+    display: grid;
+    grid-template-columns: 500px 500px;
+    gap:100px;
+    grid-template-rows: repeat(2, 1fr);
+}
+
+.relatorio_exp_dados{
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.relatorio_aca_dados{
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.relatorios_rececita{
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.relatorios_quant{
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.sair{
+    margin-top: 2%;
+    width: 70px;    
+    height:70px;
+}

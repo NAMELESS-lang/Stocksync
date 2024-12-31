@@ -1,0 +1,74 @@
+body{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 15%;
+    background-color: whitesmoke;
+}
+
+div{
+    width: 700px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    background-color: #003735;
+    border-radius: 10px;
+}
+
+img{
+    width: 200px;
+    height: 200px;
+}
+
+h1{
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    color: whitesmoke;
+}
+
+form{
+    display: flex;
+    flex-direction: column;
+    margin-left: 2%;
+}
+input{
+    margin-bottom: 10%;
+    height: 25px;
+    font-size: 20px;
+}
+
+input::placeholder{
+    font-family: Arial, Helvetica, sans-serif;
+    color: rgb(31, 31, 31);
+}
+
+label{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+    color: whitesmoke;
+}
+
+button{
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom: 5%;
+    height: 30px;
+    width: 130px;
+    font-size: 20px;
+    margin-left: 29%;
+    font-family: "Bebas Neue", serif;
+}
+
+a{
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    font-size: 30px;
+    color: rgb(31, 31, 31);
+}
+
+a:hover{
+    border-bottom: 1px solid rgb(31, 31, 31);
+}
+

@@ -1,0 +1,87 @@
+body{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10%;
+    background-color: whitesmoke;
+}
+
+div{
+    background-color: #003735;
+    display: flex;
+    flex-direction: column;
+    border-radius: 10px;
+}
+
+section{
+    text-align: center;
+    margin-bottom: 10px;
+    padding-left: 5px;
+    padding-right: 5px;
+}
+section p{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
+}
+
+h1{
+    font-family: Arial, Helvetica, sans-serif;
+    color: whitesmoke;
+    grid-row: 1;
+    grid-column: 1;
+    text-align: center;
+}
+
+form{
+    grid-row: 2;
+    grid-column: 1;
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    margin-right: 20px;
+    margin-bottom: 20px;
+}
+
+input{
+    font-size: 20px;
+    height: 25px;
+    width: 250px;
+    border: 1px solid black;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+input::placeholder{
+    color: rgb(31, 31, 31);
+}
+
+label{
+    font-family: Arial, Helvetica, sans-serif;
+    color: whitesmoke;
+    margin-top: 20px;
+    font-size: 25px;
+}
+
+button{
+    height: 40px;
+    margin-top: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 20px;
+}
+select{
+    font: 20px;
+    height: 30px;
+    width: 255px;
+}
+a{
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    text-align: center;
+    font-size: 30px;
+    color:  rgb(31, 31, 31);
+    margin-bottom: 10px;
+}
+
+a:hover{
+    border-bottom: 1px solid rgb(31, 31, 31);
+}

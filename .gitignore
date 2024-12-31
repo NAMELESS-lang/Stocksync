@@ -1,0 +1,6 @@
+/etc/php/8.3/apache2  Caminho configuração do php
+
+tail -f /var/log/apache2/error.log : para ler os erros
+
+oia.html
+teste.php

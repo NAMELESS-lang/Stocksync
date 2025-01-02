@@ -116,10 +116,13 @@ class Item{
 }
 
 class Item_db{
-    public function cadastrar_item(Item $item){
+    public function inserir_item_cadastrar_alteracao(Item $item,Usuario $user){
         require_once('conexao_db.php');
         require_once('erros.php');
         try{
+            $data_atual = new DateTime();
+            $pdo->beginTransaction();
+
             $statement  = $pdo->prepare('INSERT INTO item(codigo_barra,nome_item,data_validade,categoria,marca,quantidade,peso,valor,id_cadastrador) 
                                         VALUES(:codigo_barra,:nome_item,:data_validade,:categoria,:marca,:quantidade,:peso,:valor,:id_cadastrador)');
             $statement->bindValue('codigo_barra',$item->get_codigo_barra());
@@ -132,9 +135,19 @@ class Item_db{
             $statement->bindValue('valor',$item->get_valor());
             $statement->bindValue('id_cadastrador',$item->get_id_cadastrador());
             $statement->execute();
+            
+            $statement = $pdo->prepare('INSERT INTO alteracoes (usuario_id,codigo_barra_item,data_acao,hora_acao)
+                                        VALUES(:usuario_id,:codigo_barra_item,:data_acao,:hora_acao)');
+            $statement->bindValue('usuario_id',$user->get_id());
+            $statement->bindValue('codigo_barra_item',$item->get_codigo_barra());
+            $statement->bindValue('data_acao',$data_atual->format('Y-d-m'));
+            $statement->bindValue('hora_acao',$data_atual->format('H:i:s'));
+            $statement->execute();
+
+            $pdo->commit();
             return true;
         }catch(Exception $e){
-        $erro = new Erro('',$e->getMessage(), $e->getFile(), $e->getLine());
+        $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
         $_SESSION['erro'] = serialize($erro);
         header('Location: ../view/templates/erro.php');
         exit;
@@ -154,7 +167,7 @@ class Item_db{
                                     $dados['peso'],$dados['valor'],$codigo_barra = $dados['codigo_barra'],$id_cadastrador = $dados['id_cadastrador']);
             return $item_igual;
         }catch(Exception $e){
-        $erro = new Erro('',$e->getMessage(), $e->getFile(), $e->getLine());
+        $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
         $_SESSION['erro'] = serialize($erro);
         header('Location: ../view/templates/erro.php');
         exit;
@@ -171,7 +184,7 @@ class Item_db{
             $dados = $statement->fetch(PDO::FETCH_ASSOC);
             return $dados;
         }catch(Exception $e){
-        $erro = new Erro('',$e->getMessage(), $e->getFile(), $e->getLine());
+        $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
         $_SESSION['erro'] = serialize($erro);
         header('Location: ../view/templates/erro.php');
         exit;

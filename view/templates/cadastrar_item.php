@@ -56,12 +56,14 @@ $unidades = ['g','kg','t'];
         </form>
         <div>
         <section>
-        <p class='notificacao'><?= (isset($_SESSION['cadastrar_mensagem'])) ? htmlspecialchars($_SESSION['cadastrar_mensagem']) : null; ?></p>
+        <?php if (isset($_SESSION['cadastrar_mensagem'])){?>
+    <p class='notificacao'><?= htmlspecialchars($_SESSION['cadastrar_mensagem']) ?></p>
+        <?php }; ?>
     </section>
     <div class='div_tabelas'>
-    <p>Item a cadastrar</p>
     <?php if(!empty($_SESSION['item_cadastrado'])){
             $item = unserialize($_SESSION['item_cadastrado']);?>
+            <p>Item a cadastrar</p>
             <table>
                 <thead>
                     <tr>
@@ -108,4 +110,4 @@ $unidades = ['g','kg','t'];
     </div>
 </body>
 </html>
-<!-- <?php } ?> -->
+<?php } ?> 

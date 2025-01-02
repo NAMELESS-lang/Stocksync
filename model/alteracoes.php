@@ -47,26 +47,6 @@ class Alteracoes{
 
 
 Class Alteracoes_db{
-    public function cadastrar_alteracao(Item $item, Usuario $user){
-        require_once('conexao_db.php');
-        require_once('erros.php');
-        try{
-            $data_atual = new DateTime();
-            $statement = $pdo->prepare('INSERT INTO alteracoes (usuario_id,codigo_barra_item,data_acao,hora_acao)
-                                                    VALUES(:usuario_id,:codigo_barra_item,:data_acao,:hora_acao)');
-            $statement->bindValue('usuario_id',$user->get_id());
-            $statement->bindValue('codigo_barra_item',$user->get_codigo_barra());
-            $statement->bindValue('data_acao',$data_atual->format('Y-d-m'));
-            $statement->bindValue('hora_acao',$data_atual->format('H-i-s'));
-            $statement->execute();
-            return;
-        }catch(Exception $e){
-        $erro = new Erro('',$e->getMessage(), $e->getFile(), $e->getLine());
-        $_SESSION['erro'] = serialize($erro);
-        header('Location: ../view/templates/erro.php');
-        exit;
-    }
-    }
 }
 
 ?>

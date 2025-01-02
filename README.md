@@ -1,0 +1,2 @@
+# Stocksync
+Gerenciador de estoque

@@ -94,10 +94,33 @@ class Usuario{
     }
     
 class Usuario_db{
+    
+    public function usuario_existente(Usuario $user){
+        require_once('erros.php');
+        require_once('conexao_db.php');
+        try{
+            $statement = $pdo->prepare('SELECT * FROM users WHERE cpf = :cpf');
+            $statement->bindValue('cpf', $user->get_cpf());
+            $statement->execute();
+            $dados = $statement->fetch(PDO::FETCH_ASSOC);
+            if($dados != null){
+                return true;
+            }else{
+                return false;
+            }
+        }catch (Exception $e){
+            $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
+            }
+    }
+
+
+
     public function cadastrar_user(Usuario $user,$senha){
 
         // Função responsável por cadastrar o usuário no sistema
-
         require_once('erros.php');
         require_once('conexao_db.php');
         try{
@@ -130,6 +153,9 @@ class Usuario_db{
             $statement->bindValue('cpf', $cpf);
             $statement->execute();
             $dados = $statement->fetch(PDO::FETCH_ASSOC);
+            if($dados == null){
+                return $dados = 'Usuário não cadastrado!';
+            }
             if(password_verify($senha, $dados["senha"])){
                 return $dados;
             }else{
@@ -141,8 +167,32 @@ class Usuario_db{
         header('Location: ../view/templates/erro.php');
         exit;
         }
-        
     }
 
+    public function atualizar_senha(Usuario $user,$senha_antiga, $senha_nova){
+        require_once('erros.php');
+        require_once('conexao_db.php');
+        try{
+        $statement = $pdo->prepare('SELECT * FROM users WHERE cpf = :cpf');
+        $statement->bindValue('cpf', $user->get_cpf());
+        $statement->execute();
+        $dados = $statement->fetch(PDO::FETCH_ASSOC);
+        if(password_verify($senha_antiga,$dados["senha"])){
+            $senha_nova = password_hash($senha_nova,PASSWORD_DEFAULT);
+            $statement = $pdo->prepare('UPDATE users SET senha = :senha_nova WHERE cpf = :cpf');
+            $statement->bindValue('senha_nova', $senha_nova);
+            $statement->bindValue('cpf', $user->get_cpf());
+            $statement->execute();
+            return true;
+        }else{
+            return false;
+        }
+    }catch (Exception $e){
+        $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
+        $_SESSION['erro'] = serialize($erro);
+        header('Location: ../view/templates/erro.php');
+        exit;
+        }
+    }
 }
 ?>

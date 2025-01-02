@@ -17,12 +17,3 @@ try{
     header('Location: ../view/templates/erro.php');
     exit;
 }
-
-
-// $statement = $pdo->prepare("INSERT INTO users(nome,cpf,funcao,grupo,senha) VALUES(:nome,:cpf,:funcao,:grupo,:senha)");
-// $statement->bindValue('nome','oia');
-// $statement->bindValue('cpf','391823');
-// $statement->bindValue('funcao','doido');
-// $statement->bindValue('grupo','aodkao');
-// $statement->bindValue('senha','sajsdijasj');
-// $statement->execute();

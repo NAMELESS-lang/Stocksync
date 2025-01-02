@@ -12,7 +12,7 @@ session_start();
 </head>
 <body>
     <?php if(isset($_SESSION['login'])) { ?>
-        <p> <?= $_SESSION['login'] ?> </p>
+        <h3> <?= $_SESSION['login'] ?> </h3>
     <?php } ?>
     <div>
         <img src="../images/logo_sistema.png">

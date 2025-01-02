@@ -1,6 +1,4 @@
 <?php 
-ini_set('display_errors', 1);
-ini_set('error_reporting', E_ALL);
 session_start();
 require_once('../model/user.php');
 require_once('../model/erros.php');
@@ -11,13 +9,13 @@ set_error_handler('erros_nao_fatais');
 register_shutdown_function('erros_fatais');
 
 
+
 if(isset($_POST['cadastrar_item'])){
     try{
-        // $usuario = unserialize($_SESSION['user']);
+        $usuario = unserialize($_SESSION['user']);
         /* 
         Analisa se todos os campos estão preenchidos e faz verificação dos campos(se estão vazios e corrige qualquer entrada de código malicioso).
         */
-        $vazio = false;
         foreach($_POST as $chave => $valor){
             if(!empty($valor) && (gettype($valor) == 'string')){
                 $_POST[$chave] = filter_var($valor, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
@@ -26,26 +24,43 @@ if(isset($_POST['cadastrar_item'])){
                 $_POST[$chave] = filter_var($valor, FILTER_SANITIZE_NUMBER_FLOAT);
                 continue;
             }else{
-                $vazio = true;
+                $_SESSION['cadastrar_mensagem'] = 'Preencha todos os campos!';
+                header('Location: ../view/templates/cadastrar_item.php');
+                exit;
             }
         }
-        if($vazio != false){
-            $_SESSION['cadastrar_mensagem'] = 'Preencha todos os campos!';
+
+        // Crio o objeto item com os dados do formulário e corrigo o valores inseridos no campos
+        $item = new Item($_POST['nome_item'],$_POST['data_validade'],$_POST['categoria'],$_POST['marca'],$_POST['quantidade'],$_POST['peso_valor'],$_POST['valor']);
+        $item->setar_codigo_barras();
+        $item->trocar_virgula_valor();
+        $item->definir_peso($_POST['peso']);
+        $item->set_id_cadastrador($usuario->get_id());
+
+        // Crio os objetos que vão inserir tanto na tabela itens quanto na alterações
+        $item_db = new Item_db;
+        $alteracoes = new Alteracoes_db;
+
+        // Verifica se o item já não está cadastrado na base de dados
+        $item_igual = $item_db->buscar_item_igual($item);
+        if(!empty($item_igual)){
+            $_SESSION['cadastrador'] = $item_db->buscar_user_id($item_igual->get_id_cadastrador());
+            $_SESSION['item_igual'] = serialize($item_igual);
+            $_SESSION['item_cadastrado'] = serialize($item);
+            $_SESSION['cadastrar_mensagem'] = 'O item pode já estar cadastrado, porfavor, verifique e confirme novamente!';
             header('Location: ../view/templates/cadastrar_item.php');
             exit;
         }
-        $item = new Item($_POST['nome_item'],$_POST['data_validade'],$_POST['categoria'],$_POST['marca'],$_POST['quantidade'],$_POST['peso_valor'],$_POST['valor']);
-        $item->setar_codigo_barras();
-        $formatar_moeda = new NumberFormatter('pt-BR', NumberFormatter::CURRENCY); //Crio objeto conversor de moeda
-        $item->set_valor($formatar_moeda->formatCurrency($item->get_valor(),'BRL')); //Converto o valor para o padrão
-        $item->definir_peso($_POST['peso']);
-        // $item->set_id_cadastrador($usuario->get_id());
 
-
-        //cria objeto alterações e cadastra nas duas tabelas(alterações e itens)
-        
-        header('Location: ../view/templates/cadastrar_item.php');
-        exit;
+        // Cadastra o item na tabela itens, assim como registra na tabela alterações
+        $result = $item_db->cadastrar_item($item);
+        $result_alt = $alteracoes->cadastrar_alteracao($item,$usuario);
+        if($item_db && $result_alt){
+            $_SESSION['item_cadastrado'] = serialize($item);
+            $_SESSION['cadastrar_mensagem'] = 'Item cadastrado com sucesso!';
+            header('Location: ../view/templates/cadastrar_item.php');
+            exit;
+        }
     }catch(Exception $e){
         $erro = new Erro('',$e->getMessage(), $e->getFile(), $e->getLine());
         $_SESSION['erro'] = serialize($erro);

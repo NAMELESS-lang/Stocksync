@@ -12,7 +12,7 @@ session_start();
 </head>
 <body>
         <section>
-            <p> <?= isset($_SESSION['cadastro'])? htmlspecialchars($_SESSION['cadastro']):null; ?> </p>
+            <h3> <?= isset($_SESSION['cadastro'])? htmlspecialchars($_SESSION['cadastro']):null; ?> </h3>
         </section>
     <div>
     <h1>Cadastro</h1>

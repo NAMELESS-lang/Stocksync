@@ -11,6 +11,7 @@ senha VARCHAR(200)
 
 CREATE TABLE IF NOT EXISTS item(
 codigo_barra VARCHAR(10) PRIMARY KEY NOT NULL,
+nome_item VARCHAR(40),
 data_validade DATE,
 categoria VARCHAR(30),
 marca VARCHAR(30),

@@ -46,7 +46,7 @@ class Usuario{
         if($this->funcao == 'repositor'){
             return $this->grupo = "repositor";
         }
-        elseif($this->funcao = 'gerente_de_estoque'){
+        elseif($this->funcao == 'gerente_de_estoque'){
             return $this->grupo = 'gerente_de_estoque';
         }
     }

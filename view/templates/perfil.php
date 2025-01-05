@@ -16,7 +16,7 @@ if(isset($_SESSION['user'])){
 </head>
 <body>
     <header>
-        <a href="inicio.php"><img src="../images/voltar.png"></a>
+        <a href="../../controller/trocar_paginas.php?pagina='inicio'"><img src="../images/voltar.png"></a>
         <h2>Perfil</h2>
     </header>
     <h3><?= !empty($_SESSION['perfil'])? $_SESSION['perfil']:null ?></h3>

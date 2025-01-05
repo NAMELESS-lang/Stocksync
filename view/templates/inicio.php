@@ -22,9 +22,9 @@ if(isset($_SESSION['user'])){
         <a class='a_imagem' href="../../controller/logout.php"><img class="sair" src="../images/sair.png"></a>
         <img src="../images/logo_sistema.png" width="150px" height="150px">
         <p class="ola">Bem-vindo <?= $user->get_nome() ?></p>
-        <a href="perfil.php">Perfil</a>
-        <a href="cadastrar_item.php">Cadastrar Item</a>
-        <a href="consultar_item.php">Consultar Item</a>
+        <a href="../../controller/trocar_paginas.php?perfil='perfil'">Perfil</a>
+        <a href="../../controller/trocar_paginas.php?cadastrar='cadastrar'">Cadastrar Item</a>
+        <a href="../../controller/trocar_paginas.php?consultar='consultar'">Consultar Item</a>
     </header>
     <div class="container">
 

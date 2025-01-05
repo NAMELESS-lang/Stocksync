@@ -2,7 +2,6 @@ body{
     margin: 0;
     padding: 0;
     display: flex;
-    justify-content:space-evenly;
     align-items: center;
 }
 
@@ -30,12 +29,28 @@ header h2{
     font-size: 30px;   
 }
 
-
-form{
-    margin-right: 10px;
-    margin-top: 10%;
+div{
+    margin-left: 14%;
+    width: 70%;
+    height: 100%;
+    margin-top: 5%;
+    display: grid;
+    grid-template-columns: 1;
+    justify-content: center;
+    align-items: center;
 }
 
+form{
+    margin-left: 15%;
+}
+
+select{
+    margin-right: 10px;
+    text-align: center;
+    padding: 10px;
+    width: 200px;
+    font-size: 20px;
+}
 
 label{
     color: #f5f5f5;
@@ -52,7 +67,7 @@ input{
     font-size: 20px;
     font-family: Arial, Helvetica, sans-serif;
     width: 300px;
-    height: 35px;
+    height: 45px;
 }
 
 button{
@@ -66,6 +81,103 @@ button{
 }
 
 button:hover{
+    color: whitesmoke;
+    background-color: #003735;
+}
+
+
+table{
+    border-collapse: collapse;
+}
+
+thead {
+    gap: 10px;
+}
+thead th {
+    border: 1px solid black;
+    text-align: center;
+    padding: 10px;
+    background-color: #003735;
+    color: whitesmoke;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+tbody td {
+    border: 1px solid black;
+    padding: 10px;
+    font-size: 20px;
+    background-color: rgb(196, 196, 196);
+    text-align: center;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+
+.notificacao{
+    text-align: center;
+    background-color: rgb(179, 179, 4);
+    padding: 10px;
+    border-radius: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
+}
+
+.ancora_atualizar_item{
+    font-family: Arial, Helvetica, sans-serif;
+    border: none;
+    border-radius: 10px;
+    width: 153px;
+    height: 35px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    text-align: center;
+    padding-top: 10px;
+    background-color: gray;
+    font-size: 20px;
+    color: black;
+    text-decoration: none;
+}
+
+.ancora_atualizar_item:hover{
+    background-color: #003735;
+    color: whitesmoke;
+}
+
+
+.div_2{
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.div_2 p{
+    border-radius: 10px;
+    padding: 5px;
+    background-color: #003735;
+    color: whitesmoke;
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.form_2{
+    margin-top: 7%;
+    display: flex;
+    justify-content: space-around;
+    margin-left: 1%;
+    margin-bottom: 10%;
+}
+
+.button_2{
+    margin-top: 10px;
+    margin-left: 10px;
+    border: none;
+    border-radius: 10px;
+    width: 153px;
+    height: 35px;
+    background-color: gray;
+    font-size: 20px;
+}
+
+.button_2:hover{
     color: whitesmoke;
     background-color: #003735;
 }

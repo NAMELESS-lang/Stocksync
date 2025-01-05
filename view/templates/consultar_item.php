@@ -1,10 +1,14 @@
 <?php 
+// Ativa a exibição de erros
+ini_set('display_errors', 1);
+
+// Define o nível de erros a serem reportados (todos os tipos de erros)
+error_reporting(E_ALL);
 
 session_start();
-
-
+require('../../model/item.php');
+$pesquisar_por = ['código de barra' => 'codigo_barra','nome do item' => 'nome_item'];
 ?>
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -15,16 +19,68 @@ session_start();
 </head>
 <body>
     <header>
-        <a href="inicio.php"><img src="../images/voltar.png"></a>
+        <a href="../../controller/trocar_paginas.php?pagina='inicio'"><img src="../images/voltar.png"></a>
         <h2>Consultar item</h2>
     </header>
+    <div>
+    <?php if(!empty($_SESSION['consultar_messagem'])) { ?> <p class='notificacao'> <?= $_SESSION['consultar_messagem'] ?> </p>
+        <form action="../../controller/item_manipular.php" method ='POST'>
+            <select name="pesq_por">
+                <?php foreach($pesquisar_por as $coluna => $registro) { ?>
+                        <option name="pesq_por"><?= ucwords($coluna) ?></option>
+                        <?php } ?>
+            </select> 
+        <input type="text" name ='item_pesq' required>
 
-    <form action="../../controller/item_manipular.php" method ='POST'>
-        <label for="nome_item">Nome do item: </label>
-        <input type="text" name ='nome_item'>
-
-        <button type='submit'>Consultar</button>
+        <button type='submit' name='consultar'>Consultar</button>
     </form>
+    <?php }else{ ?>
+    <form class='form_2' action="../../controller/item_manipular.php" method ='POST'>
+            <select name="pesq_por">
+                <?php foreach($pesquisar_por as $coluna => $registro) { ?>
+                        <option name="pesq_por"><?= ucwords($coluna) ?></option>
+                        <?php } ?>
+            </select> 
+        <input type="text" name ='item_pesq' required>
 
+        <button class='button_2'type='submit' name='consultar'>Consultar</button>
+    </form>
+    <?php }?>
+    <?php if(!empty($_SESSION['item_consultado'])){ ?>
+    <?php foreach($_SESSION['item_consultado'] as $item){
+        $contador = 1;
+        implode($item) ?>
+        <div class='div_2'>
+            <p>Item <?= $contador?></p>
+            <a class='ancora_atualizar_item' href="../../controller/trocar_paginas.php?atualizar_item='atualizar_item">Alterar</a>
+        </div>
+            <table>
+                <thead>
+                    <tr>
+                        <?php foreach(Item::retorna_titulos_campos() as $coluna){ ?>
+                                <th><?= ucwords($coluna)?></th>
+                        <?php }?>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                    <?php foreach($item as $coluna => $campo){ ?>
+                          <td>  <?php if($coluna == 'data_validade'){
+                            ?>
+                           <?= Item::mostrar_data($campo); ?>
+                                <?php }elseif($coluna == 'valor'){  ?>
+                                <?= Item::imprimir_formatado($campo); ?>
+                                    <?php } else{ ?>
+                                    <?= $campo;?>
+                    <?php } ?>
+                            </td>
+                            <?php }?>
+                    </tr>
+                </tbody>
+            </table>
+    <?php $contador++;
+        }?>                 
+    <?php }?>
+    </div>
 </body>
 </html>

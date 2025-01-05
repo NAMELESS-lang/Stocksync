@@ -11,6 +11,8 @@ class Item{
     protected $valor;
     protected $id_cadastrador;
 
+    // Construtor do objeto
+
     public function __construct(string $nome_item, string $data_validade, string $categoria, string $marca, int $quantidade, 
     string $peso, string $valor,string $codigo_barra = null, int $id_cadastrador=null)
     {
@@ -66,22 +68,23 @@ class Item{
 
     public function set_id_cadastrador(int $id_cadastrador) { return $this->id_cadastrador = $id_cadastrador; }
 
-    public function mostrar_data($data_produto){
+    static public function mostrar_data($data_produto){
         $data = new DateTime($data_produto);
         $data_formatada = $data->format('m/d/y');
         return $data_formatada;
     }
-    // demais funções
 
-    public function retorna_array(){
-        return ['nome do item' => $this->nome_item,'data de validade' => $this->data_validade,'categoria' => $this->categoria,
-        'marca' => $this->marca, 'quantidade' => $this->quantidade, 'peso' => $this->peso,'valor' => $this->valor];
-    }
+    // Usado para imprimir o nome dos itens de maneira correta dos retornados do banco de dados
 
-    public function retorna_array_buscado_db(){
+   public function retorna_array_buscado_db(){
         return ['Código de barras'=> $this->codigo_barra, 'nome do item' => $this->nome_item,'data de validade' => $this->data_validade,'categoria' => $this->categoria,
         'marca' => $this->marca, 'quantidade' => $this->quantidade, 'peso' => $this->peso,'valor' => $this->valor, 'Cadastrador' => $this->id_cadastrador];
     }
+
+    static public function retorna_titulos_campos(){
+        return ['código de barras','nome do item','data de validade','categoria','marca','quantidade','peso','valor','cadastrador'];
+    }
+    // Cria o código de barras do item, no caso do banco de dados, a sua primary key
 
     public function setar_codigo_barras(){
         for($i = 0; $i<10; $i++){
@@ -91,9 +94,14 @@ class Item{
         return;
     }
 
+    // Concatena o peso com a sua unidade de medida
+
     public function definir_peso($unidade){
         return $this->peso.=$unidade;
     }
+
+    /* Troca alguma virgula inserida no campo de cadastro do item por um ponto. É usado para evitar algum erro com valores caso os precise converter 
+    de string para float */
 
     public function trocar_virgula_valor(){
         for($i=0; $i<strlen($this->valor);$i++){
@@ -106,7 +114,9 @@ class Item{
         return;
     }
 
-    public function imprimir_formatado($valor){
+    // Usado para quando for mostrado ao usuário o valor de um produto, ele esteja com a unidade monetária correta
+
+    static public function imprimir_formatado($valor){
         if(gettype($valor == 'string')){
             $valor = floatval($valor);
         } 
@@ -116,10 +126,12 @@ class Item{
 }
 
 class Item_db{
+
+    // Esta função cadastra um item novo na tabela itens, assim como esta ação realizada na tabela alterações do banco de dados
+
     public function inserir_item_cadastrar_alteracao(Item $item,Usuario $user){
-        require_once('conexao_db.php');
-        require_once('erros.php');
         try{
+            global $pdo;
             $data_atual = new DateTime();
             $pdo->beginTransaction();
 
@@ -154,15 +166,19 @@ class Item_db{
     }
     }
 
+    // Usada sempre que for cadastrar um item, para verificar se não há algum item similar no banco de dados
+
     public function buscar_item_igual(Item $item){
-        require_once('conexao_db.php');
-        require_once('erros.php');
         try{
+            global $pdo;
             $statement  = $pdo->prepare('SELECT * FROM `item` WHERE nome_item = :nome_item AND marca = :marca');
             $statement->bindValue('nome_item',$item->get_nome_item());
             $statement->bindValue('marca',$item->get_marca());
             $statement->execute();
             $dados = $statement->fetch(PDO::FETCH_ASSOC);
+            if($dados == null){
+                return;
+            }
             $item_igual = new Item($dados['nome_item'],$dados['data_validade'],$dados['categoria'],$dados['marca'],$dados['quantidade'],
                                     $dados['peso'],$dados['valor'],$codigo_barra = $dados['codigo_barra'],$id_cadastrador = $dados['id_cadastrador']);
             return $item_igual;
@@ -174,10 +190,12 @@ class Item_db{
     }
     }
 
+    /* Busca um usuário por id para ser usado no momento em que um item similar foi encontrado. Esse usuário é o cadastrou um item similar ao
+    que o próprio ou outro usuário está tentando cadastrar */
+
     public function buscar_user_id($id){
-        include('conexao_db.php');
-        require_once('erros.php');
         try{
+            global $pdo;
             $statement  = $pdo->prepare('SELECT * FROM `users` WHERE id = :id');
             $statement->bindValue('id',$id);
             $statement->execute();
@@ -191,4 +209,53 @@ class Item_db{
     }
     }
 
+    public function buscar_item_nome($nome){
+        try{
+            global $pdo;
+            $statement = $pdo->prepare('SELECT * FROM item WHERE nome_item = :nome');
+            $statement->bindValue('nome', $nome);
+            $statement->execute();
+            $dados = $statement->fetchAll(PDO::FETCH_ASSOC);
+            return $dados;
+        }catch(Exception $e){
+            $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
+    }
+    }
+
+    public function buscar_item_codigo_barra($codigo_barra){
+        try{
+            global $pdo;
+            $statement = $pdo->prepare('SELECT * FROM item WHERE codigo_barra = :codigo_barra');
+            $statement->bindValue('codigo_barra', $codigo_barra);
+            $statement->execute();
+            $dados = $statement->fetchAll(PDO::FETCH_ASSOC);
+            return $dados;
+        }catch(Exception $e){
+            $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
+    }
+    }
+
+
+    public function listar_por_coluna($coluna){
+        try{
+            global $pdo;
+            $statement = $pdo->prepare('SELECT * FROM item ORDER BY :coluna');
+            $statement->bindValue('coluna', $coluna);
+            $statement->execute();
+            $dados = $statement->fetchAll();
+            return $dados;
+        }catch(Exception $e){
+            $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
+    }
+
+}
 }

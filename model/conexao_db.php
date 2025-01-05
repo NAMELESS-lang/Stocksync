@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 $tipo_soft = 'mysql';
 $servidor = 'localhost';
 $nome_db = 'projeto';

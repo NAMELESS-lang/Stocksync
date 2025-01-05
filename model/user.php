@@ -1,4 +1,8 @@
 <?php 
+
+include_once('conexao_db.php');
+require_once('erros.php');
+
 class Usuario{
     protected $id;
     protected $nome;
@@ -55,7 +59,7 @@ class Usuario{
         /*
         Esta função verifica se a senha preenchia contém 8 dígitos, caracteres maiúsculos ,minúsculos e números, se sim retorna true senão false
         */
-        if ($senha >= 8){
+        if (strlen($senha) >= 8){
             if (preg_match('/[a-z]/',$senha) && preg_match('/[0-9]/',$senha) && preg_match('/[A-Z]/',$senha)){
                 return true;
             }else{
@@ -96,9 +100,8 @@ class Usuario{
 class Usuario_db{
     
     public function usuario_existente(Usuario $user){
-        require_once('erros.php');
-        require_once('conexao_db.php');
         try{
+            global $pdo;
             $statement = $pdo->prepare('SELECT * FROM users WHERE cpf = :cpf');
             $statement->bindValue('cpf', $user->get_cpf());
             $statement->execute();
@@ -119,11 +122,9 @@ class Usuario_db{
 
 
     public function cadastrar_user(Usuario $user,$senha){
-
         // Função responsável por cadastrar o usuário no sistema
-        require_once('erros.php');
-        require_once('conexao_db.php');
         try{
+            global $pdo;
             $senha = password_hash($senha, PASSWORD_DEFAULT);
             $statement = $pdo->prepare('INSERT INTO users(nome,cpf,funcao,grupo,senha) VALUES(:nome,:cpf,:funcao,:grupo,:senha)');
             $statement->bindValue('nome',$user->get_nome());
@@ -145,10 +146,8 @@ class Usuario_db{
 
         /* Função responsável por realizar o login do usuário, buscando seu cpf e verificando se a senha digitada no formulário de login
         é igual a do banco de dados */
-
-        require_once('erros.php');
-        require_once('conexao_db.php');
         try{
+            global $pdo;
             $statement = $pdo->prepare('SELECT * FROM users WHERE cpf = :cpf');
             $statement->bindValue('cpf', $cpf);
             $statement->execute();
@@ -170,23 +169,22 @@ class Usuario_db{
     }
 
     public function atualizar_senha(Usuario $user,$senha_antiga, $senha_nova){
-        require_once('erros.php');
-        require_once('conexao_db.php');
         try{
-        $statement = $pdo->prepare('SELECT * FROM users WHERE cpf = :cpf');
-        $statement->bindValue('cpf', $user->get_cpf());
-        $statement->execute();
-        $dados = $statement->fetch(PDO::FETCH_ASSOC);
-        if(password_verify($senha_antiga,$dados["senha"])){
-            $senha_nova = password_hash($senha_nova,PASSWORD_DEFAULT);
-            $statement = $pdo->prepare('UPDATE users SET senha = :senha_nova WHERE cpf = :cpf');
-            $statement->bindValue('senha_nova', $senha_nova);
+            global $pdo;
+            $statement = $pdo->prepare('SELECT * FROM users WHERE cpf = :cpf');
             $statement->bindValue('cpf', $user->get_cpf());
             $statement->execute();
-            return true;
-        }else{
-            return false;
-        }
+            $dados = $statement->fetch(PDO::FETCH_ASSOC);
+            if(password_verify($senha_antiga,$dados["senha"])){
+                $senha_nova = password_hash($senha_nova,PASSWORD_DEFAULT);
+                $statement = $pdo->prepare('UPDATE users SET senha = :senha_nova WHERE cpf = :cpf');
+                $statement->bindValue('senha_nova', $senha_nova);
+                $statement->bindValue('cpf', $user->get_cpf());
+                $statement->execute();
+                return true;
+            }else{
+                return false;
+            }
     }catch (Exception $e){
         $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
         $_SESSION['erro'] = serialize($erro);

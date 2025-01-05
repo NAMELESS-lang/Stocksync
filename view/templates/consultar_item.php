@@ -24,6 +24,7 @@ $pesquisar_por = ['código de barra' => 'codigo_barra','nome do item' => 'nome_i
     </header>
     <div>
     <?php if(!empty($_SESSION['consultar_messagem'])) { ?> <p class='notificacao'> <?= $_SESSION['consultar_messagem'] ?> </p>
+        // Quando o usuário pesquisa algum item e ele é encontrado, este formulário é impresso a ele, o que muda de um para o outro é o estilo aplicado
         <form action="../../controller/item_manipular.php" method ='POST'>
             <select name="pesq_por">
                 <?php foreach($pesquisar_por as $coluna => $registro) { ?>
@@ -34,7 +35,7 @@ $pesquisar_por = ['código de barra' => 'codigo_barra','nome do item' => 'nome_i
 
         <button type='submit' name='consultar'>Consultar</button>
     </form>
-    <?php }else{ ?>
+    <?php }else{  // Formulário que é apresentado inicialmente para o usuário?>
     <form class='form_2' action="../../controller/item_manipular.php" method ='POST'>
             <select name="pesq_por">
                 <?php foreach($pesquisar_por as $coluna => $registro) { ?>

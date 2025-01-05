@@ -4,17 +4,3 @@ tail -f /var/log/apache2/error.log : para ler os erros
 
 oia.html
 teste.php
-
-
-<?php if(!empty($_SESSION['consultar_messagem'])) { ?> <p class='notificacao'> <?= $_SESSION['consultar_messagem'] ?> </p>
-        <form action="../../controller/item_manipular.php" method ='POST'>
-            <select name="pesq_por">
-                <?php foreach($pesquisar_por as $coluna => $registro) { ?>
-                        <option name="pesq_por"><?= ucwords($coluna) ?></option>
-                        <?php } ?>
-            </select> 
-        <input type="text" name ='item_pesq' required>
-
-        <button type='submit' name='consultar'>Consultar</button>
-    </form>
-    <?php }else{'';} ?>

@@ -17,7 +17,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             */
             foreach($_POST as $chave => $valor){
                 if(!empty($valor) && (gettype($valor) == 'string')){
-                    $_POST[$chave] = filter_var($valor, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $_POST[$chave] = filter_var($valor, FILTER_SANITIZE_SPECIAL_CHARS);
                     continue;
                 }elseif(!empty($valor) && $gettype($valor) == 'bouble'){
                     $_POST[$chave] = filter_var($valor, FILTER_SANITIZE_NUMBER_FLOAT);
@@ -31,7 +31,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 
             // Crio o objeto item com os dados do formulário e corrigo o valores inseridos no campos
             $item = new Item($_POST['nome_item'],$_POST['data_validade'],$_POST['categoria'],$_POST['marca'],$_POST['quantidade'],$_POST['peso_valor'],$_POST['valor']);
-            $item->set_nome(ucwords($item->set_nome()));
+            $item->set_nome_item(ucwords($item->get_nome_item()));
             $item->setar_codigo_barras();
             $item->trocar_virgula_valor();
             $item->definir_peso($_POST['peso']);
@@ -54,7 +54,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             // Cadastra o item na tabela itens, assim como registra na tabela alterações
             $result = $item_db->inserir_item_cadastrar_alteracao($item,$usuario);
             if($result){
-                $_SESSION['item_cadastrado'] = serialize($item);
+                $_SESSION['sucesso_cadastro'] = serialize($item);
                 $_SESSION['cadastrar_mensagem'] = 'Item cadastrado com sucesso!';
                 header('Location: ../view/templates/cadastrar_item.php');
                 exit;
@@ -78,9 +78,6 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
 
             $result = $item_db->inserir_item_cadastrar_alteracao($item_cadastrar,$usuario);
             if($result){
-                unset($_SESSION['cadastrador']);
-                unset($_SESSION['item_igual']);
-                unset($_SESSION['item_cadastrado']);
                 $_SESSION['cadastrar_mensagem'] = 'Item cadastrado com sucesso!';
                 header('Location: ../view/templates/cadastrar_item.php');
                 exit;
@@ -95,9 +92,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
     }elseif(isset($_POST['cancelar_cadastro'])){
         // Este condicional é usado quando o usuário confirma o cadastro, após notificado de um item poder ser igual a um existente na base de dados.
         try{
-            unset($_SESSION['cadastrador']);
-            unset($_SESSION['item_igual']);
-            unset($_SESSION['item_cadastrado']);
+            unset($_SESSION['cadastrador'],$_SESSION['item_igual'],$_SESSION['item_cadastrado'],$_SESSION['sucesso_cadastro']);
             $_SESSION['cadastrar_mensagem'] = 'Operação cancelada com sucesso!';
             header('Location: ../view/templates/cadastrar_item.php');
             exit;

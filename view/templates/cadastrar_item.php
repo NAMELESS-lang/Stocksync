@@ -16,10 +16,12 @@ $unidades = ['g', 'kg', 't'];
 </head>
 <body>
     <header>
-        <!-- Corrigido a URL do link "Voltar" -->
         <a href="../../controller/trocar_paginas.php?pagina=inicio"><img src="../images/voltar.png" alt="Voltar"></a>
         <h2>Cadastrar item</h2>
     </header>
+
+
+    <!-- Formulário de cadastro do item -->
     <form action="../../controller/item_manipular.php" method="POST">
         <label for="nome_item">Nome do item: </label>
         <input type="text" name="nome_item" placeholder="Nome do item" required>
@@ -57,12 +59,13 @@ $unidades = ['g', 'kg', 't'];
         </div>
     </form>
     <div class="div_tabelas">
-    <section>
+
+        <!-- Notificação de sucesso no cadastro do item -->
         <?php if (isset($_SESSION['cadastrar_mensagem'])): ?>
             <p class="notificacao"><?= htmlspecialchars($_SESSION['cadastrar_mensagem']) ?></p>
         <?php endif; ?>
-    </section>
 
+        <!-- Mostra o item que o usuário que esta cadastrando, assim como o que já existe no banco de dados (se for o caso) -->
         <?php if (!empty($_SESSION['item_cadastrado']) && !empty($_SESSION['item_igual'])): 
             $user_logado = unserialize($_SESSION['user']);
             $item = unserialize($_SESSION['item_cadastrado']); ?>
@@ -116,6 +119,8 @@ $unidades = ['g', 'kg', 't'];
                 <input class="cancelar" type="submit" name="cancelar_cadastro" value="Cancelar">
             </form>
 
+
+        <!-- Mostra o item cadastrado com sucesso -->
         <?php elseif (!empty($_SESSION['sucesso_cadastro'])): 
             $item_cadastrado = unserialize($_SESSION['sucesso_cadastro']);
             $user_atual = unserialize($_SESSION['user']); ?>

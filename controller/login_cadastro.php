@@ -12,7 +12,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         try{
             foreach($_POST as $campo => $valor){ // Faz verificação dos campos(se estão vazios e corrige qualquer entrada de código malicioso).
                 if (!empty($_POST[$campo])){
-                    $valor = filter_var($valor,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $valor = filter_var($valor,FILTER_SANITIZE_SPECIAL_CHARS);
                     $_POST[$campo]=$valor;
                 }else{
                     $_SESSION['cadastro'] = 'Preencha todos os campos!';
@@ -66,7 +66,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         try{
             foreach($_POST as $campo => $valor){ // Faz verificação dos campos(se estão vazios e corrige qualquer entrada de código malicioso).
                 if (!empty($_POST[$campo])){
-                    $valor = filter_var($valor,FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+                    $valor = filter_var($valor,FILTER_SANITIZE_SPECIAL_CHARS);
                     $_POST[$campo]=$valor;
                 }else{
                     $_SESSION['cadastro'] = 'Preencha todos os campos!';

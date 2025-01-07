@@ -40,7 +40,9 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
     }elseif(isset($_GET['atualizar_item'])){
             foreach($mensagens as $ms){
                 unset($_SESSION[$ms]);
-         }   
+         }
+        parse_str($_GET['item'],$item);
+        $_SESSION['item_modificar'] = $item;  
         header('Location: ../view/templates/atualizar_item.php');
         exit;
 }

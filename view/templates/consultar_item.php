@@ -23,8 +23,9 @@ $pesquisar_por = ['código de barra' => 'codigo_barra','nome do item' => 'nome_i
         <h2>Consultar item</h2>
     </header>
     <div>
+
+    <!-- Quando o usuário pesquisa algum item e ele é encontrado, este formulário é impresso a ele, o que muda de um para o outro é o estilo aplicado -->
     <?php if(!empty($_SESSION['consultar_messagem'])) { ?> <p class='notificacao'> <?= $_SESSION['consultar_messagem'] ?> </p>
-        // Quando o usuário pesquisa algum item e ele é encontrado, este formulário é impresso a ele, o que muda de um para o outro é o estilo aplicado
         <form action="../../controller/item_manipular.php" method ='POST'>
             <select name="pesq_por">
                 <?php foreach($pesquisar_por as $coluna => $registro) { ?>
@@ -35,7 +36,10 @@ $pesquisar_por = ['código de barra' => 'codigo_barra','nome do item' => 'nome_i
 
         <button type='submit' name='consultar'>Consultar</button>
     </form>
-    <?php }else{  // Formulário que é apresentado inicialmente para o usuário?>
+
+
+    <!-- Formulário que é apresentado inicialmente para o usuário -->
+    <?php }else{?>
     <form class='form_2' action="../../controller/item_manipular.php" method ='POST'>
             <select name="pesq_por">
                 <?php foreach($pesquisar_por as $coluna => $registro) { ?>
@@ -47,13 +51,17 @@ $pesquisar_por = ['código de barra' => 'codigo_barra','nome do item' => 'nome_i
         <button class='button_2'type='submit' name='consultar'>Consultar</button>
     </form>
     <?php }?>
-    <?php if(!empty($_SESSION['item_consultado'])){ ?>
+
+
+    <!-- Mostra os itens retornados -->
+    <?php if(!empty($_SESSION['item_consultado'])){ 
+        $contador = 1;?>
     <?php foreach($_SESSION['item_consultado'] as $item){
-        $contador = 1;
         implode($item) ?>
         <div class='div_2'>
-            <p>Item <?= $contador?></p>
-            <a class='ancora_atualizar_item' href="../../controller/trocar_paginas.php?atualizar_item='atualizar_item">Alterar</a>
+            <p><?='Item '.$contador ?></p>
+            <a class='ancora_atualizar_item' href="../../controller/trocar_paginas.php?
+            atualizar_item='atualizar_item'&item=<?php echo urlencode(http_build_query($item))?>">Alterar</a>
         </div>
             <table>
                 <thead>
@@ -79,7 +87,8 @@ $pesquisar_por = ['código de barra' => 'codigo_barra','nome do item' => 'nome_i
                     </tr>
                 </tbody>
             </table>
-    <?php $contador++;
+    <?php
+    $contador++;
         }?>                 
     <?php }?>
     </div>

@@ -132,7 +132,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
                 header('Location: ../view/templates/consultar_item.php');
                 exit;
             }else{
-                $_SESSION['consultar_messagem'] = 'Nenhuma item correspondente encontrado para: '.$_POST['item_pesq'];
+                $_SESSION['consultar_messagem'] = 'item não encontrado para: '.$_POST['item_pesq'];
                 header('Location: ../view/templates/consultar_item.php');
                 exit;
             }
@@ -158,7 +158,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
                 header('Location: ../view/templates/consultar_item.php');
                 exit;
             }else{
-                $_SESSION['consultar_messagem'] = 'Nenhuma item correspondente encontrado para: '.$_POST['item_pesq'];
+                $_SESSION['consultar_messagem'] = 'item não encontrado para: '.$_POST['item_pesq'];
                 header('Location: ../view/templates/consultar_item.php');
                 exit;
             }

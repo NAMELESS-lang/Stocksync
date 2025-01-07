@@ -81,9 +81,6 @@ class Item{
         'marca' => $this->marca, 'quantidade' => $this->quantidade, 'peso' => $this->peso,'valor' => $this->valor, 'Cadastrador' => $this->id_cadastrador];
     }
 
-    static public function retorna_titulos_campos(){
-        return ['código de barras','nome do item','data de validade','categoria','marca','quantidade','peso','valor','cadastrador'];
-    }
     // Cria o código de barras do item, no caso do banco de dados, a sua primary key
 
     public function setar_codigo_barras(){
@@ -93,6 +90,7 @@ class Item{
         }
         return;
     }
+
 
     // Concatena o peso com a sua unidade de medida
 
@@ -122,6 +120,22 @@ class Item{
         } 
         $formatar_moeda = new NumberFormatter('pt-BR', NumberFormatter::CURRENCY); //Crio objeto conversor de moeda
         return $formatar_moeda->formatCurrency($valor,'BRL'); //Converto o valor para moeda real  
+    }
+
+    // Usada quando for atualizar um item e precisa remover a unidade para inseri-lo (valor) no campo peso
+    static function remover_unidade_peso($peso){
+        $valor = '';
+        for($i =0; $i < strlen($peso);$i++){
+            if(preg_match('/[0-9]/',$peso[$i])){
+                $valor .= $peso[$i];
+            }
+        }
+        return $valor;
+    }
+
+    // Usado nos campos das tabelas que são impressas
+    static public function retorna_titulos_campos(){
+        return ['código de barras','nome do item','data de validade','categoria','marca','quantidade','peso','valor','cadastrador'];
     }
 }
 

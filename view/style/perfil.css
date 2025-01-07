@@ -30,7 +30,10 @@ img{
     height: 60px;
 }
 
-
+table{
+    border-collapse: collapse;
+    border-radius: 10px;
+}
 header h2{
     margin-left: 42%;
     color: whitesmoke;

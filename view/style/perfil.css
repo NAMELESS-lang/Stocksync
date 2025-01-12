@@ -17,12 +17,20 @@ header{
 }
 
 .div_container{
-    margin-top: 5%;
+    margin-top: 2%;
     margin-right: 2%;
     display: flex;
     justify-content: space-around;
     gap: 100px
 }
+
+
+.perf_img{
+    margin-top: 2%;
+    width: 200px;
+    height: 200px;
+}
+
 img{
     margin-left: 30px;
     margin-top: 10px;
@@ -107,10 +115,22 @@ fieldset{
     margin-top: 5%;
     border: 1px solid #222121;
 }
-h3{
+p{
     margin-top: 10%;
     margin-right: 1%;
     font-family: Arial, Helvetica, sans-serif;
     font-size: 30px;
+}
+
+.notificacao{
+    margin-left: auto;
+    margin-right: auto;
+    width: 500px;
+    text-align: center;
+    background-color: rgb(179, 179, 4);
+    padding: 10px;
+    border-radius: 10px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 25px;
 }
 

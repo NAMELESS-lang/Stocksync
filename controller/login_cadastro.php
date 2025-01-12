@@ -69,8 +69,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
                     $valor = filter_var($valor,FILTER_SANITIZE_SPECIAL_CHARS);
                     $_POST[$campo]=$valor;
                 }else{
-                    $_SESSION['cadastro'] = 'Preencha todos os campos!';
-                    header('Location: ../view/templates/cadastro.php');
+                    $_SESSION['login'] = 'Preencha todos os campos!';
+                    header('Location: ../view/templates/login.php');
                     exit;
                 }
             }   

@@ -12,7 +12,7 @@ session_start();
 </head>
 <body>
     <?php if(isset($_SESSION['login'])) { ?>
-        <h3> <?= $_SESSION['login'] ?> </h3>
+        <p class ='notificacao'> <?= $_SESSION['login'] ?> <p>
     <?php } ?>
     <div>
         <img src="../images/logo_sistema.png">

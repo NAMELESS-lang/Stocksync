@@ -1,6 +1,11 @@
 <?php
 require_once('../../model/item.php');
+require_once('../../model/user.php');
 session_start();
+ini_set('display_errors', 1);
+
+// Define o nível de erros a serem reportados (todos os tipos de erros)
+error_reporting(E_ALL);
 $unidades = ['g', 'kg', 't'];
 ?>
 <!DOCTYPE html>
@@ -20,6 +25,10 @@ $unidades = ['g', 'kg', 't'];
     <?php if(!empty($_SESSION['item_modificar'])){ 
         $item = $_SESSION['item_modificar'];
         ?>
+         <?php if(!empty($_SESSION['cadastrar_mensagem'])){ 
+            echo $item = $_SESSION['cadastrar_mensagem'];
+         }?>
+            
          <form action="../../controller/item_manipular.php" method="POST">
          <label for="nome_item">Nome do item: </label>
          <input type="text" name="nome_item" value='<?= $item['nome_item'] ?>' required>
@@ -53,7 +62,7 @@ $unidades = ['g', 'kg', 't'];
  
          <div class="div_button">
              <button type="reset">Limpar</button>
-             <button type="submit" name="cadastrar_item" value="cadastrar_item">Cadastrar</button>
+             <button type="submit" name="atualizar_item" value="atualizar_item">Atualizar</button>
          </div>
      </form>
     <?php }?>
@@ -61,26 +70,26 @@ $unidades = ['g', 'kg', 't'];
     <div class="div_tabelas">
     <!-- Notificação do sucesso na atualização do item -->
     <?php if (isset($_SESSION['sucesso_atualizacao'])): ?>
-            <p class="notificacao"><?= htmlspecialchars($_SESSION['cadastrar_mensagem']) ?></p>
+            <p class="notificacao"><?= htmlspecialchars($_SESSION['sucesso_atualizacao']) ?></p>
         <?php endif; ?>
 
 
     <!-- Mostra o item atualizado -->
-    <?php if (!empty($_SESSION['sucesso_cadastro'])): 
-            $item_cadastrado = unserialize($_SESSION['sucesso_cadastro']);
+    <?php if (!empty($_SESSION['item_atualizacao_sucesso'])): 
+            $item_atualizado = $_SESSION['item_atualizacao_sucesso'];
             $user_atual = unserialize($_SESSION['user']); ?>
-            <p>Item cadastrado</p>
+            <p>Item atualizado</p>
             <table>
                 <thead>
                     <tr>
-                        <?php foreach($item_cadastrado->retorna_array_buscado_db() as $coluna => $campo): ?>
-                            <th><?= htmlspecialchars(ucwords($coluna)) ?></th>
+                        <?php foreach(Item::retorna_titulos_campos() as $coluna): ?>
+                            <th><?= ucwords($coluna) ?></th>
                         <?php endforeach; ?>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <?php foreach($item_cadastrado->retorna_array_buscado_db() as $coluna => $campo): ?>
+                        <?php foreach($item_atualizado as $coluna => $campo): ?>
                             <td>
                                 <?= htmlspecialchars(
                                     ($coluna == 'Cadastrador') ? $user_atual->get_nome() : 
@@ -92,6 +101,7 @@ $unidades = ['g', 'kg', 't'];
                     </tr>
                 </tbody>
             </table>
+            <a class='sair' href="../../controller/trocar_paginas.php?pos_atualizar=pos_atualizar">Sair</a>
         <?php endif; ?>
     </div>
 </body>

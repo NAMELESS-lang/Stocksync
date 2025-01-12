@@ -11,9 +11,9 @@ session_start();
     <link rel="stylesheet" href="../style/cadastro.css">
 </head>
 <body>
-        <section>
-            <h3> <?= isset($_SESSION['cadastro'])? htmlspecialchars($_SESSION['cadastro']):null; ?> </h3>
-        </section>
+    <?php if(isset($_SESSION['cadastro'])){ ?>
+        <p class='notificacao'><?php echo htmlspecialchars($_SESSION['cadastro'])?></p>
+    <?php }?>
     <div>
     <h1>Cadastro</h1>
     <form action="/stocksync/controller/login_cadastro.php" method="POST">

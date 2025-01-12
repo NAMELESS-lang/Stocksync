@@ -4,6 +4,7 @@ require_once('../model/user.php');
 require_once('../model/erros.php');
 require_once('../model/item.php');
 require_once('../model/alteracoes.php');
+require_once('../model/relatorios.php');
 
 set_error_handler('erros_nao_fatais');
 register_shutdown_function('erros_fatais');
@@ -103,65 +104,132 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             exit;
         }
     }elseif(isset($_POST['consultar'])){
-        // Verifica se os campos estão preenchidos e se estiverem realizar as correções, senão notifica o usuário para preencher um dos campos
-        if(!empty($_POST['item_pesq'] && !empty($_POST['pesq_por']))){
-            $_POST['item_pesq'] = filter_var($_POST['item_pesq'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
-        }else{
-            $_SESSION['consultar_messagem'] = 'Preencha o campo necessário!';
-            header('Location: ../view/templates/consultar_item.php');
+        try{
+            // Verifica se os campos estão preenchidos e se estiverem realizar as correções, senão notifica o usuário para preencher um dos campos
+            if(!empty($_POST['item_pesq'] && !empty($_POST['pesq_por']))){
+                $_POST['item_pesq'] = filter_var($_POST['item_pesq'], FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+            }else{
+                $_SESSION['consultar_messagem'] = 'Preencha o campo necessário!';
+                header('Location: ../view/templates/consultar_item.php');
+                exit;
+            }
+
+            //Condicional do buscar por código de barra
+            $item_db = new Item_db;
+            if($_POST['pesq_por'] == 'Código De Barra'){
+                $item_consultado = $item_db->buscar_item_codigo_barra($_POST['item_pesq']);
+                if(!empty($item_consultado)){
+
+                    // Percorro os itens retornados e busco os nome dos respectivos cadastradores de cada um, precisa-se usar passagem por referência aqui
+                    foreach($item_consultado as &$ic){
+                        foreach($ic as $coluna => &$registro){
+                            if($coluna == 'id_cadastrador'){
+                                $retorno = $item_db->buscar_user_id($registro);
+                                $registro = $retorno['nome'];
+                            }
+                        }
+                    }
+                    $_SESSION['item_consultado'] = $item_consultado;
+                    $_SESSION['consultar_messagem'] = 'Item(s) encontrado(s) com sucesso!';
+                    header('Location: ../view/templates/consultar_item.php');
+                    exit;
+                }else{
+                    $_SESSION['consultar_messagem'] = 'item não encontrado para: '.$_POST['item_pesq'];
+                    header('Location: ../view/templates/consultar_item.php');
+                    exit;
+                }
+            
+
+            // Condicional do buscar por nome
+            }elseif($_POST['pesq_por'] == 'Nome Do Item'){
+                $item_consultado = $item_db->buscar_item_nome($_POST['item_pesq']);
+                if(!empty($item_consultado)){
+
+                    // Percorro os itens retornados e busco os nome dos respectivos cadastradores de cada um, precisa-se usar passagem por referência aqui
+                    foreach($item_consultado as &$ic){
+                        foreach($ic as $coluna => &$registro){
+                            if($coluna == 'id_cadastrador'){
+                                $retorno = $item_db->buscar_user_id($registro);
+                                $registro = $retorno['nome'];
+                            }
+                        }
+                    }
+
+                    $_SESSION['item_consultado'] = $item_consultado;
+                    $_SESSION['consultar_messagem'] = 'Item(s) encontrado(s) com sucesso!';
+                    header('Location: ../view/templates/consultar_item.php');
+                    exit;
+                }else{
+                    $_SESSION['consultar_messagem'] = 'item não encontrado para: '.$_POST['item_pesq'];
+                    header('Location: ../view/templates/consultar_item.php');
+                    exit;
+                }
+            }
+        }catch(Exception $e){
+            $erro = new Erro('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
             exit;
         }
 
-        //Condicional do buscar por código de barra
-        $item_db = new Item_db;
-        if($_POST['pesq_por'] == 'Código De Barra'){
-            $item_consultado = $item_db->buscar_item_codigo_barra($_POST['item_pesq']);
-            if(!empty($item_consultado)){
+        }elseif($_POST['atualizar_item']){
+            try{
+                $usuario = unserialize($_SESSION['user']);
+                $item_modificar = $_SESSION['item_modificar'];
 
-                 // Percorro os itens retornados e busco os nome dos respectivos cadastradores de cada um, precisa-se usar passagem por referência aqui
-                foreach($item_consultado as &$ic){
-                    foreach($ic as $coluna => &$registro){
-                        if($coluna == 'id_cadastrador'){
-                            $retorno = $item_db->buscar_user_id($registro);
-                            $registro = $retorno['nome'];
-                        }
-                    }
-                }
-                $_SESSION['item_consultado'] = $item_consultado;
-                $_SESSION['consultar_messagem'] = 'Item(s) encontrado(s) com sucesso!';
-                header('Location: ../view/templates/consultar_item.php');
-                exit;
-            }else{
-                $_SESSION['consultar_messagem'] = 'item não encontrado para: '.$_POST['item_pesq'];
-                header('Location: ../view/templates/consultar_item.php');
-                exit;
-            }
-        
-
-        // Condicional do buscar por nome
-        }elseif($_POST['pesq_por'] == 'Nome Do Item'){
-            $item_consultado = $item_db->buscar_item_nome($_POST['item_pesq']);
-            if(!empty($item_consultado)){
-
-                // Percorro os itens retornados e busco os nome dos respectivos cadastradores de cada um, precisa-se usar passagem por referência aqui
-                foreach($item_consultado as &$ic){
-                    foreach($ic as $coluna => &$registro){
-                        if($coluna == 'id_cadastrador'){
-                            $retorno = $item_db->buscar_user_id($registro);
-                            $registro = $retorno['nome'];
-                        }
+                foreach($_POST as $chave => $valor){
+                    if(!empty($valor) && (gettype($valor) == 'string')){
+                        $_POST[$chave] = filter_var($valor, FILTER_SANITIZE_SPECIAL_CHARS);
+                        continue;
+                    }elseif(!empty($valor) && $gettype($valor) == 'bouble'){
+                        $_POST[$chave] = filter_var($valor, FILTER_SANITIZE_NUMBER_FLOAT);
+                        continue;
+                    }else{
+                        $_SESSION['cadastrar_mensagem'] = 'Preencha todos os campos!';
+                        header('Location: ../view/templates/cadastrar_item.php');
+                        exit;
                     }
                 }
 
-                $_SESSION['item_consultado'] = $item_consultado;
-                $_SESSION['consultar_messagem'] = 'Item(s) encontrado(s) com sucesso!';
-                header('Location: ../view/templates/consultar_item.php');
-                exit;
-            }else{
-                $_SESSION['consultar_messagem'] = 'item não encontrado para: '.$_POST['item_pesq'];
-                header('Location: ../view/templates/consultar_item.php');
-                exit;
-            }
+                $item = new Item($_POST['nome_item'],$_POST['data_validade'],$_POST['categoria'],$_POST['marca'],$_POST['peso_valor'],
+                                $_POST['quantidade'] ,$_POST['valor'],$codigo_barra = $item_modificar['codigo_barra']);
+                $item->set_nome_item(ucwords($item->get_nome_item()));
+                $item->trocar_virgula_valor();
+                $item->definir_peso($_POST['peso']);
+                $item_db = new Item_db();
+                $retorno = $item_db->atualizar_cadastrar_ateracao($item, $usuario);
+                if($retorno){
+                    $item_modificado = $item_db->buscar_item_codigo_barra($item_modificar['codigo_barra']);
+                    unset($_SESSION['item_modificar']);
+                    $_SESSION['item_atualizacao_sucesso'] = $item_modificado;
+                    $_SESSION['sucesso_atualizacao'] = 'Item atualizado com sucesso!';
+                    header('Location: ../view/templates/atualizar_item.php');
+                    exit;
+                }
+
+        }catch(Exception $e){
+            $erro = new Erro('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
         }
-}
+        }
+}elseif($_SERVER['REQUEST_METHOD'] == "GET"){
+    if(isset($_GET['proximo_venc'])){
+        $relatorio = new Relatorios();
+        $linhas = $relatorio->quantas_linhas_vencendo();
+        $_SESSION['lista_vencendo'] += 5;
+        if($_SESSION['lista_vencendo'] < $linhas[0]){
+            header('Location: ../view/templates/inicio.php');
+            exit;
+        }else{
+            $_SESSION['lista_vencendo'] -= 5;
+            header('Location: ../view/templates/inicio.php');
+            exit;
+        }
+    }elseif(isset($_GET['anterior_venc'])){
+        $_SESSION['lista_vencendo'] -= 5;
+        header('Location: ../view/templates/inicio.php');
+        exit;
+    }
 }

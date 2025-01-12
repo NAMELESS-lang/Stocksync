@@ -74,12 +74,6 @@ class Item{
         return $data_formatada;
     }
 
-    // Usado para imprimir o nome dos itens de maneira correta dos retornados do banco de dados
-
-   public function retorna_array_buscado_db(){
-        return ['Código de barras'=> $this->codigo_barra, 'nome do item' => $this->nome_item,'data de validade' => $this->data_validade,'categoria' => $this->categoria,
-        'marca' => $this->marca, 'quantidade' => $this->quantidade, 'peso' => $this->peso,'valor' => $this->valor, 'Cadastrador' => $this->id_cadastrador];
-    }
 
     // Cria o código de barras do item, no caso do banco de dados, a sua primary key
 
@@ -89,6 +83,14 @@ class Item{
             $this->codigo_barra.= $valor;
         }
         return;
+    }
+
+
+    // Usado para imprimir o nome dos itens de maneira correta dos arrays retornados do statement do pdo
+
+    public function retorna_array_buscado_db(){
+        return ['Código de barras'=> $this->codigo_barra, 'nome do item' => $this->nome_item,'data de validade' => $this->data_validade,'categoria' => $this->categoria,
+        'marca' => $this->marca, 'quantidade' => $this->quantidade, 'peso' => $this->peso,'valor' => $this->valor, 'Cadastrador' => $this->id_cadastrador];
     }
 
 
@@ -122,7 +124,7 @@ class Item{
         return $formatar_moeda->formatCurrency($valor,'BRL'); //Converto o valor para moeda real  
     }
 
-    // Usada quando for atualizar um item e precisa remover a unidade para inseri-lo (valor) no campo peso
+    // Usada quando for atualizar um item e precisa remover a unidade para inseri-lo (valor) no campo peso do formulário
     static function remover_unidade_peso($peso){
         $valor = '';
         for($i =0; $i < strlen($peso);$i++){
@@ -141,7 +143,7 @@ class Item{
 
 class Item_db{
 
-    // Esta função cadastra um item novo na tabela itens, assim como esta ação realizada na tabela alterações do banco de dados
+    // Esta função cadastra um item novo na tabela itens, assim como esta ação (cadastrar o item) na tabela alterações do banco de dados
 
     public function inserir_item_cadastrar_alteracao(Item $item,Usuario $user){
         try{
@@ -245,7 +247,7 @@ class Item_db{
             $statement = $pdo->prepare('SELECT * FROM item WHERE codigo_barra = :codigo_barra');
             $statement->bindValue('codigo_barra', $codigo_barra);
             $statement->execute();
-            $dados = $statement->fetchAll(PDO::FETCH_ASSOC);
+            $dados = $statement->fetch(PDO::FETCH_ASSOC);
             return $dados;
         }catch(Exception $e){
             $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
@@ -270,6 +272,42 @@ class Item_db{
             header('Location: ../view/templates/erro.php');
             exit;
     }
+    }
 
+    public function atualizar_cadastrar_ateracao(Item $item, Usuario $user){
+        try{
+            $data_atual = new DateTime();
+            global $pdo;
+            $pdo->beginTransaction();
+            $statement= $pdo->prepare('UPDATE item SET nome_item = :nome_item
+            ,data_validade = :data_validade,categoria = :categoria, marca = :marca, 
+            quantidade = :quantidade, peso = :peso, valor = :valor WHERE codigo_barra = :codigo_barra');
+            $statement->bindValue('nome_item',$item->get_nome_item());
+            $statement->bindValue('data_validade',$item->get_data_validade());
+            $statement->bindValue('categoria',$item->get_categoria());
+            $statement->bindValue('marca',$item->get_marca());
+            $statement->bindValue('quantidade',$item->get_quantidade());
+            $statement->bindValue('peso',$item->get_peso());
+            $statement->bindValue('valor',$item->get_valor());
+            $statement->bindValue('codigo_barra',$item->get_codigo_barra());
+            $statement->execute();
+
+            $statement = $pdo->prepare('INSERT INTO alteracoes(usuario_id,codigo_barra_item,data_acao, hora_acao) 
+            VALUES(:usuario_id,:codigo_barra_item,:data_acao, :hora_acao)');
+            $statement->bindValue('usuario_id',$user->get_id());
+            $statement->bindValue('codigo_barra_item',$item->get_codigo_barra());
+            $statement->bindValue('data_acao',$data_atual->format('Y-d-m'));
+            $statement->bindValue('hora_acao',$data_atual->format('H:i:s'));
+            $statement->execute();
+
+            $pdo->commit();
+            return true;
+        }catch(Exception $e){
+            $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
+        }
+    }
 }
-}
+

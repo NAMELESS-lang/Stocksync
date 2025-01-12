@@ -1,11 +1,21 @@
 <?php 
-session_start();
+
+ini_set('display_errors', 1);
+
+// Define o nível de erros a serem reportados (todos os tipos de erros)
+error_reporting(E_ALL);
 require_once('../../controller/security/logado.php');
 require_once('../../model/user.php');
 require_once('../../model/item.php');
+require_once('../../model/relatorios.php');
 
 if(isset($_SESSION['user'])){
     $user = unserialize($_SESSION['user']);
+}
+
+$relatorios = new Relatorios();
+if(!isset($_SESSION['lista_vencendo'])){
+    $_SESSION['lista_vencendo']=0;
 }
 ?>
 
@@ -29,24 +39,88 @@ if(isset($_SESSION['user'])){
     <div class="container">
 
             <div class="relatorio_exp_dados">
-            <h1>Data validade expirando</h1>
-                <p>corsa</p>
+            <table>
+                <thead>
+                    <tr>
+                        <?php foreach($relatorios->colunas_itens_vencendo() as $coluna):
+                            echo  '<th>' .$coluna .'</th>'; 
+                        endforeach; ?>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        
+                            <?php 
+                            if(!empty($relatorios->itens_vencendo($_SESSION['lista_vencendo']))){
+                            foreach($relatorios->itens_vencendo($_SESSION['lista_vencendo']) as $item):
+                            echo '<tr>';
+                                foreach($item as $coluna => $campo):
+                                    echo '<td>'.$campo.'</td>';
+                                endforeach;
+                            endforeach;
+                            echo '</tr>';
+                        }else{
+                            echo '<tr> <td>Não há mais itens para mostrar</td></tr>';
+                        }?>
+                    </tbody>
+                </table>
+                <?php if($_SESSION['lista_vencendo'] < $relatorios->quantas_linhas_vencendo()[0]){?>
+                <a href="../../controller/item_manipular.php?proximo_venc='proximo_venc'">Pŕoximo</a>
+                <?php } ?>
+                <?php if($_SESSION['lista_vencendo'] > 0){ ?>
+                <a href="../../controller/item_manipular.php?anterior_venc='anterior_venc'">Anterior</a>
+                    <?php } ?>
             </div>
-
             <div class="relatorio_aca_dados">
-                <h1>Itens acabando</h1>
-                <p>celta</p>
+            <table>
+                <thead>
+                    <tr>
+                        <?php foreach($relatorios->colunas_itens_acabando() as $coluna):
+                            echo  '<th>' .$coluna .'</th>'; 
+                        endforeach; ?>
+                    </tr>
+                    </thead>
+                    <tbody>
+                            <?php foreach($relatorios->itens_acabando(5) as $item):
+                            echo '<tr>';
+                                foreach($item as $coluna => $campo):
+                                    echo '<td>'.$campo.'</td>';
+                                endforeach;
+                            endforeach;
+                            echo '</tr>';
+                            ?>
+                    </tbody>
+                </table>
             </div>
-
             <div class="relatorios_rececita">
-                <h1 class='h1_2'>Receita total</h1>
-                <p>palio</p>
-            </div>
-            <div class="relatorios_quant">
-                <h1 class='h1_2'>Quantidade total em estoque</h1>
-                <p>gol</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th> Receita total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th> <?= $relatorios->receita_total()?></th>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
 
+            <div class="relatorios_quant">
+            <table>
+                    <tr>
+                    <th>
+                        Itens acabando
+                    </th>
+                    </tr>
+                    <tr>
+                    <td>
+                        Item
+                    </td>
+                    </tr>
+            </table>
+            </div>
+    <a class='button_relatorios' href='../../controller/item_manipular.php?atualizar_relatorios=atualizar_relatorios'>Atualizar relatórios</a>
     </div>
 </body>
 </html>

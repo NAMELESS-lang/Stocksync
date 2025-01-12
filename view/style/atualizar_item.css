@@ -100,6 +100,8 @@ button:hover{
 }
 
 .div_tabelas{
+    margin: auto;
+    margin-top: 10%;
     display: flex;
     flex-direction: column;
 }
@@ -134,4 +136,26 @@ p{
     margin-top: 40px;
     font-size: 30px;
     text-align: center;
+}
+
+.sair{
+    border: none;
+    border-radius: 10px;
+    width: 153px;
+    height: 35px;
+    margin-top: 30px;
+    margin-left: 41%;
+    background-color: gray;
+    font-size: 20px;
+    text-align: center;
+    padding-top: 10px;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+    text-decoration: none;
+    padding: auto;
+}
+
+.sair:hover{
+    color: whitesmoke;
+    background-color: #003735;
 }

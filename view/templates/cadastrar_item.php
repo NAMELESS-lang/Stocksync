@@ -65,6 +65,7 @@ $unidades = ['g', 'kg', 't'];
             <p class="notificacao"><?= htmlspecialchars($_SESSION['cadastrar_mensagem']) ?></p>
         <?php endif; ?>
 
+        
         <!-- Mostra o item que o usuário que esta cadastrando, assim como o que já existe no banco de dados (se for o caso) -->
         <?php if (!empty($_SESSION['item_cadastrado']) && !empty($_SESSION['item_igual'])): 
             $user_logado = unserialize($_SESSION['user']);

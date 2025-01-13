@@ -19,7 +19,9 @@ if(isset($_SESSION['user'])){
         <a href="../../controller/trocar_paginas.php?pagina='inicio'"><img src="../images/voltar.png"></a>
         <h2>Perfil</h2>
     </header>
-    <p class='notificacao'><?= !empty($_SESSION['perfil'])? $_SESSION['perfil']:null ?></p>
+    <?php if(!empty($_SESSION['perfil'])){ ?>
+    <p class='notificacao'><?= ($_SESSION['perfil'])?></p>
+    <?php } ?>
     <div class='div_container'>
         <img class='perf_img' src="../images/user.png">
         <div>

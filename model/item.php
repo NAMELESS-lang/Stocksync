@@ -70,7 +70,7 @@ class Item{
 
     static public function mostrar_data($data_produto){
         $data = new DateTime($data_produto);
-        $data_formatada = $data->format('m/d/y');
+        $data_formatada = $data->format('d/m/y');
         return $data_formatada;
     }
 
@@ -104,6 +104,14 @@ class Item{
     de string para float */
 
     public function trocar_virgula_valor(){
+        if(preg_match('/[A-Z]/',$this->valor)){
+            return false;
+        }elseif(preg_match('/[a-z]/',$this->valor)){
+            return false;
+        }elseif(preg_match('/[!-)]/','10')){
+            return false;
+        }
+
         for($i=0; $i<strlen($this->valor);$i++){
             if(preg_match('/[,]/',$this->valor[$i])){
                 $this->valor[$i] = '.';
@@ -111,7 +119,7 @@ class Item{
                 continue;
             }
         }
-        return;
+        return true;
     }
 
     // Usado para quando for mostrado ao usuário o valor de um produto, ele esteja com a unidade monetária correta
@@ -168,7 +176,7 @@ class Item_db{
                                         VALUES(:usuario_id,:codigo_barra_item,:data_acao,:hora_acao)');
             $statement->bindValue('usuario_id',$user->get_id());
             $statement->bindValue('codigo_barra_item',$item->get_codigo_barra());
-            $statement->bindValue('data_acao',$data_atual->format('Y-d-m'));
+            $statement->bindValue('data_acao',$data_atual->format('Y-m-d'));
             $statement->bindValue('hora_acao',$data_atual->format('H:i:s'));
             $statement->execute();
 

@@ -34,7 +34,12 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             $item = new Item($_POST['nome_item'],$_POST['data_validade'],$_POST['categoria'],$_POST['marca'],$_POST['quantidade'],$_POST['peso_valor'],$_POST['valor']);
             $item->set_nome_item(ucwords($item->get_nome_item()));
             $item->setar_codigo_barras();
-            $item->trocar_virgula_valor();
+
+            if($item->trocar_virgula_valor() == false){
+                $_SESSION['cadastrar_mensagem'] = 'Digite apenas números no campo "valor"';
+                header('Location: ../view/templates/cadastrar_item.php');
+                exit;
+            }
             $item->definir_peso($_POST['peso']);
             $item->set_id_cadastrador($usuario->get_id());
 
@@ -215,20 +220,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         }
         }
 }elseif($_SERVER['REQUEST_METHOD'] == "GET"){
-    if(isset($_GET['proximo_venc'])){
-        $relatorio = new Relatorios();
-        $linhas = $relatorio->quantas_linhas_vencendo();
-        $_SESSION['lista_vencendo'] += 5;
-        if($_SESSION['lista_vencendo'] < $linhas[0]){
-            header('Location: ../view/templates/inicio.php');
-            exit;
-        }else{
-            $_SESSION['lista_vencendo'] -= 5;
-            header('Location: ../view/templates/inicio.php');
-            exit;
-        }
-    }elseif(isset($_GET['anterior_venc'])){
-        $_SESSION['lista_vencendo'] -= 5;
+    if(isset($_GET['atualizar_relatorios'])){
+        $_SESSION['atualizacao_relatorios_menssagem'] = 'Relatórios atualizados com sucesso!';
         header('Location: ../view/templates/inicio.php');
         exit;
     }

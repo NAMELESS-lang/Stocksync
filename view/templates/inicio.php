@@ -14,9 +14,6 @@ if(isset($_SESSION['user'])){
 }
 
 $relatorios = new Relatorios();
-if(!isset($_SESSION['lista_vencendo'])){
-    $_SESSION['lista_vencendo']=0;
-}
 ?>
 
 <!DOCTYPE html>
@@ -41,6 +38,7 @@ if(!isset($_SESSION['lista_vencendo'])){
             <div class="relatorio_exp_dados">
             <table>
                 <thead>
+                <tr><th class='titulo_tabelas' colspan = '4'>ITENS VENCENDO</th></tr>
                     <tr>
                         <?php foreach($relatorios->colunas_itens_vencendo() as $coluna):
                             echo  '<th>' .$coluna .'</th>'; 
@@ -50,29 +48,32 @@ if(!isset($_SESSION['lista_vencendo'])){
                     <tbody>
                         
                             <?php 
-                            if(!empty($relatorios->itens_vencendo($_SESSION['lista_vencendo']))){
-                            foreach($relatorios->itens_vencendo($_SESSION['lista_vencendo']) as $item):
-                            echo '<tr>';
-                                foreach($item as $coluna => $campo):
-                                    echo '<td>'.$campo.'</td>';
+                            if(!empty($relatorios->itens_vencendo())){
+                                foreach($relatorios->itens_vencendo() as $item):
+                                echo '<tr>';
+                                    foreach($item as $coluna => $campo):
+                                        echo '<td>';
+                                        if ($coluna == 'data_validade') {
+                                            echo Item::mostrar_data($campo);
+                                        } elseif ($coluna == 'valor') {
+                                            echo Item::imprimir_formatado($campo);
+                                        } else {
+                                            echo $campo;
+                                        }
+                                        echo '</td>';
+                                    endforeach;
                                 endforeach;
-                            endforeach;
-                            echo '</tr>';
+                                echo '</tr>';
                         }else{
-                            echo '<tr> <td>Não há mais itens para mostrar</td></tr>';
+                            echo '<tr> <td>Não há itens para mostrar</td></tr>';
                         }?>
                     </tbody>
                 </table>
-                <?php if($_SESSION['lista_vencendo'] < $relatorios->quantas_linhas_vencendo()[0]){?>
-                <a href="../../controller/item_manipular.php?proximo_venc='proximo_venc'">Pŕoximo</a>
-                <?php } ?>
-                <?php if($_SESSION['lista_vencendo'] > 0){ ?>
-                <a href="../../controller/item_manipular.php?anterior_venc='anterior_venc'">Anterior</a>
-                    <?php } ?>
             </div>
             <div class="relatorio_aca_dados">
             <table>
                 <thead>
+                <tr><th class='titulo_tabelas' colspan = '4'>ITENS ACABANDO</th></tr>
                     <tr>
                         <?php foreach($relatorios->colunas_itens_acabando() as $coluna):
                             echo  '<th>' .$coluna .'</th>'; 
@@ -80,47 +81,49 @@ if(!isset($_SESSION['lista_vencendo'])){
                     </tr>
                     </thead>
                     <tbody>
-                            <?php foreach($relatorios->itens_acabando(5) as $item):
-                            echo '<tr>';
-                                foreach($item as $coluna => $campo):
-                                    echo '<td>'.$campo.'</td>';
+                            <?php 
+                            if(!empty($relatorios->itens_vencendo())){
+                                foreach($relatorios->itens_acabando() as $item):
+                                echo '<tr>';
+                                    foreach($item as $coluna => $campo):
+                                        echo '<td>';
+                                        if ($coluna == 'data_validade') {
+                                            echo Item::mostrar_data($campo);
+                                        } else{
+                                            echo $campo;
+                                        }
+                                        echo '</td>';
+                                        
+                                    endforeach;
                                 endforeach;
-                            endforeach;
-                            echo '</tr>';
-                            ?>
+                                echo '</tr>';
+                         }else{
+                            echo '<tr> <td>Não há itens para mostrar</td></tr>';
+                         }?>
                     </tbody>
                 </table>
             </div>
             <div class="relatorios_rececita">
-                <table>
+                <table class='table2'>
                     <thead>
                         <tr>
-                            <th> Receita total</th>
+                            <th> RECEITA TOTAL</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <th> <?= $relatorios->receita_total()?></th>
+                        <tr colspan = '4'>
+                            <th class = 'receita_celula'> <?= Item::imprimir_formatado($relatorios->receita_total())?></th>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
-            <div class="relatorios_quant">
-            <table>
-                    <tr>
-                    <th>
-                        Itens acabando
-                    </th>
-                    </tr>
-                    <tr>
-                    <td>
-                        Item
-                    </td>
-                    </tr>
-            </table>
+            <div class="relatorios_at">
+            <?php if (isset($_SESSION['atualizacao_relatorios_menssagem'])): ?>
+            <p class="notificacao"><?= htmlspecialchars($_SESSION['atualizacao_relatorios_menssagem']) ?></p>
+            <?php endif; ?>
+                <a class='button_relatorios' href='../../controller/item_manipular.php?atualizar_relatorios=atualizar_relatorios'>Atualizar relatórios</a>
             </div>
-    <a class='button_relatorios' href='../../controller/item_manipular.php?atualizar_relatorios=atualizar_relatorios'>Atualizar relatórios</a>
     </div>
 </body>
 </html>

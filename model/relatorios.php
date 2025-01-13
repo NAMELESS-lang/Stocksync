@@ -1,12 +1,10 @@
 <?php 
 require_once('conexao_db.php');
 class Relatorios{
-    public function itens_vencendo($numero){
+    public function itens_vencendo(){
         global $pdo;
-        $statement = $pdo->prepare('SELECT codigo_barra,nome_item,data_validade,valor 
-                                    FROM item WHERE DATEDIFF(data_validade, CURRENT_DATE()) <=20 LIMIT 5 OFFSET :numero');
-        $statement->bindValue('numero', $numero,PDO::PARAM_INT);
-        $statement->execute();
+        $statement = $pdo->query('SELECT codigo_barra,nome_item,data_validade,valor 
+                                    FROM item WHERE DATEDIFF(data_validade, CURRENT_DATE()) <=20');
         $dados = $statement->fetchAll(PDO::FETCH_ASSOC);
         return $dados;
     }   
@@ -15,11 +13,9 @@ class Relatorios{
         return ['Código de barras','Nome do item','Data de validade','Valor'];
         }
 
-    public function itens_acabando($numero){
+    public function itens_acabando(){
         global $pdo;
-        $statement = $pdo->prepare('SELECT codigo_barra,nome_item,data_validade,quantidade FROM item WHERE quantidade <= 50 LIMIT 5 OFFSET :numero');
-        $statement->bindValue('numero', $numero, PDO::PARAM_INT);
-        $statement->execute();
+        $statement = $pdo->query('SELECT codigo_barra,nome_item,data_validade,quantidade FROM item WHERE quantidade <= 50');
         $dados = $statement->fetchAll(PDO::FETCH_ASSOC);
         return $dados;
     }
@@ -30,7 +26,7 @@ class Relatorios{
     
     public function receita_total(){
         global $pdo;
-        $statement = $pdo->query('SELECT SUM(valor) FROM item WHERE data_validade > CURRENT_DATE()');
+        $statement = $pdo->query('SELECT SUM(valor) FROM item');
         $receita = $statement->fetch(PDO::FETCH_NUM);
         return $receita[0];
     }

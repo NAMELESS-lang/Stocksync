@@ -3,25 +3,25 @@ require_once('conexao_db.php');
 class Relatorios{
     public function itens_vencendo(){
         global $pdo;
-        $statement = $pdo->query('SELECT codigo_barra,nome_item,data_validade,valor 
+        $statement = $pdo->query('SELECT codigo_barra,nome_item,data_validade,quantidade,valor 
                                     FROM item WHERE DATEDIFF(data_validade, CURRENT_DATE()) <=20');
         $dados = $statement->fetchAll(PDO::FETCH_ASSOC);
         return $dados;
     }   
 
     public function colunas_itens_vencendo(){
-        return ['Código de barras','Nome do item','Data de validade','Valor'];
+        return ['Código de barras','Nome do item','Data de validade','quantidade','Valor'];
         }
 
     public function itens_acabando(){
         global $pdo;
-        $statement = $pdo->query('SELECT codigo_barra,nome_item,data_validade,quantidade FROM item WHERE quantidade <= 50');
+        $statement = $pdo->query('SELECT codigo_barra,nome_item,data_validade,quantidade,valor FROM item WHERE quantidade <= 50');
         $dados = $statement->fetchAll(PDO::FETCH_ASSOC);
         return $dados;
     }
 
     public function colunas_itens_acabando(){
-        return ['Código de barras','Nome do item','Data de validade','Quantidade'];
+        return ['Código de barras','Nome do item','Data de validade','Quantidade','Valor'];
         }
     
     public function receita_total(){

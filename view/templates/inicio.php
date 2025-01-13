@@ -34,11 +34,10 @@ $relatorios = new Relatorios();
         <a href="../../controller/trocar_paginas.php?consultar='consultar'">Consultar Item</a>
     </header>
     <div class="container">
-
             <div class="relatorio_exp_dados">
             <table>
                 <thead>
-                <tr><th class='titulo_tabelas' colspan = '4'>ITENS VENCENDO</th></tr>
+                <tr><th class='titulo_tabelas' colspan = '5'>ITENS VENCENDO</th></tr>
                     <tr>
                         <?php foreach($relatorios->colunas_itens_vencendo() as $coluna):
                             echo  '<th>' .$coluna .'</th>'; 
@@ -73,7 +72,7 @@ $relatorios = new Relatorios();
             <div class="relatorio_aca_dados">
             <table>
                 <thead>
-                <tr><th class='titulo_tabelas' colspan = '4'>ITENS ACABANDO</th></tr>
+                <tr><th class='titulo_tabelas' colspan = '5'>ITENS ACABANDO</th></tr>
                     <tr>
                         <?php foreach($relatorios->colunas_itens_acabando() as $coluna):
                             echo  '<th>' .$coluna .'</th>'; 
@@ -89,6 +88,8 @@ $relatorios = new Relatorios();
                                         echo '<td>';
                                         if ($coluna == 'data_validade') {
                                             echo Item::mostrar_data($campo);
+                                        }elseif ($coluna == 'valor') {
+                                            echo Item::imprimir_formatado($campo);
                                         } else{
                                             echo $campo;
                                         }

@@ -304,7 +304,7 @@ class Item_db{
             VALUES(:usuario_id,:codigo_barra_item,:data_acao, :hora_acao)');
             $statement->bindValue('usuario_id',$user->get_id());
             $statement->bindValue('codigo_barra_item',$item->get_codigo_barra());
-            $statement->bindValue('data_acao',$data_atual->format('Y-d-m'));
+            $statement->bindValue('data_acao',$data_atual->format('Y-m-d'));
             $statement->bindValue('hora_acao',$data_atual->format('H:i:s'));
             $statement->execute();
 

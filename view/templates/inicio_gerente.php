@@ -119,7 +119,8 @@ $relatorios = new Relatorios();
                     </thead>
                     <tbody>
                         <tr colspan = '4'>
-                            <th class = 'receita_celula'> <?= Item::imprimir_formatado($relatorios->receita_total())?></th>
+                            <th class = 'receita_celula'> <?= !empty(Item::imprimir_formatado($relatorios->receita_total())) ? Item::imprimir_formatado($relatorios->receita_total())
+                            : 'Não há valores para mostrar!'?></th>
                         </tr>
                     </tbody>
                 </table>

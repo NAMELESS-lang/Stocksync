@@ -89,6 +89,7 @@ img{
 }
 
 .relatorio_exp_dados{
+    margin-left: 10%;
     overflow: auto;
     height: 73%;
     grid-column: 1;
@@ -96,6 +97,7 @@ img{
 }
 
 .relatorio_aca_dados{
+    margin-left: 10%;
     overflow: auto;
     height: 73%;
     grid-column: 1;

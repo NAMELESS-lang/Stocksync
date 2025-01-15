@@ -56,7 +56,8 @@ header a{
     text-decoration: none;
     margin: auto;
     height: 40px;
-    width: 170px;
+    width: 180px;
+    padding: auto;
     margin-right: 90px;
     border-radius: 10px;
     border: none;
@@ -89,6 +90,7 @@ img{
 }
 
 .relatorio_exp_dados{
+    margin-left: 10%;
     overflow: auto;
     height: 73%;
     grid-column: 1;
@@ -96,6 +98,7 @@ img{
 }
 
 .relatorio_aca_dados{
+    margin-left: 10%;
     overflow: auto;
     height: 73%;
     grid-column: 1;

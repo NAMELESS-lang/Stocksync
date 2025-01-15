@@ -221,7 +221,12 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
         }
 }elseif($_SERVER['REQUEST_METHOD'] == "GET"){
     if(isset($_GET['atualizar_relatorios'])){
+        $user = unserialize($_SESSION['user']);
         $_SESSION['atualizacao_relatorios_menssagem'] = 'Relatórios atualizados com sucesso!';
+        if($user->get_grupo() == 'gerente_de_estoque'){
+            header('Location: ../view/templates/inicio_gerente.php');
+            exit;
+        }
         header('Location: ../view/templates/inicio.php');
         exit;
     }

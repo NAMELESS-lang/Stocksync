@@ -1,7 +1,6 @@
 <?php 
 
 ini_set('display_errors', 1);
-
 // Define o nível de erros a serem reportados (todos os tipos de erros)
 error_reporting(E_ALL);
 require_once('../../controller/security/logado.php');
@@ -13,6 +12,13 @@ if(isset($_SESSION['user'])){
     $user = unserialize($_SESSION['user']);
 }
 
+// Garante que apenas gerentes possam acessar este página inicial, pois caso usuários do grupo repositores tente acessar pela url está página,
+// ele é redirecionado para a página de seu grupo
+if($user->get_grupo() == 'repositor'){
+    header('Location: inicio.php');
+    exit();
+}
+
 $relatorios = new Relatorios();
 ?>
 
@@ -22,7 +28,7 @@ $relatorios = new Relatorios();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Início</title>
-    <link rel="stylesheet" href="../style/inicio.css">
+    <link rel="stylesheet" href="../style/inicio_gerente.css">
 </head>
 <body>
     <header>
@@ -32,6 +38,7 @@ $relatorios = new Relatorios();
         <a href="../../controller/trocar_paginas.php?perfil='perfil'">Perfil</a>
         <a href="../../controller/trocar_paginas.php?cadastrar='cadastrar'">Cadastrar Item</a>
         <a href="../../controller/trocar_paginas.php?consultar='consultar'">Consultar Item</a>
+        <a href="../../controller/trocar_paginas.php?relatorios='relatorios'">Relatórios</a>
     </header>
     <div class="container">
             <div class="relatorio_exp_dados">

@@ -1,6 +1,8 @@
 <?php 
 session_start();
+require_once('../model/user.php');
 require_once('./security/logado.php');
+$user = unserialize($_SESSION['user']);
 
 if($_SERVER['REQUEST_METHOD'] == "GET"){
     $mensagens = ['cadastrar_mensagem','cadastrador','item_igual','item_cadastrado','cadastrar_mensagem','consultar_messagem'
@@ -11,22 +13,26 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
         foreach($mensagens as $ms){
             unset($_SESSION[$ms]);
         }
+        if($user->get_grupo() == 'gerente_de_estoque'){
+            header('Location: ../view/templates/inicio_gerente.php');
+            exit();
+        }
         header('Location: ../view/templates/inicio.php');
         exit;
     }
 
     elseif(isset($_GET['cadastrar'])){
-            foreach($mensagens as $ms){
-                unset($_SESSION[$ms]);
-            }
+        foreach($mensagens as $ms){
+            unset($_SESSION[$ms]);
+        }
         header('Location: ../view/templates/cadastrar_item.php');
         exit;
     }
 
     elseif(isset($_GET['consultar'])){
-            foreach($mensagens as $ms){
-                unset($_SESSION[$ms]);
-            }   
+        foreach($mensagens as $ms){
+            unset($_SESSION[$ms]);
+        }   
         header('Location: ../view/templates/consultar_item.php');
         exit;
     }
@@ -35,17 +41,24 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
         foreach($mensagens as $ms){
             unset($_SESSION[$ms]);
         }   
-    header('Location: ../view/templates/perfil.php');
-    exit;
-
+        header('Location: ../view/templates/perfil.php');
+        exit;
     }elseif(isset($_GET['cadastro'])){
         foreach($mensagens as $ms){
             unset($_SESSION[$ms]);
         }   
-    header('Location: ../view/templates/cadastro.php');
-    exit;
+        header('Location: ../view/templates/cadastro.php');
+        exit;
 
-    }elseif(isset($_GET['atualizar_item'])){
+    }
+    elseif(isset($_GET['relatorios'])){
+        foreach($mensagens as $ms){
+            unset($_SESSION[$ms]);
+        }   
+        header('Location: ../view/templates/relatorios.php');
+        exit;
+    }
+    elseif(isset($_GET['atualizar_item'])){
             foreach($mensagens as $ms){
                 unset($_SESSION[$ms]);
          }
@@ -54,13 +67,12 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
         header('Location: ../view/templates/atualizar_item.php');
         exit;
     }elseif(isset($_GET['pos_atualizar'])){
-        echo 'aqui';
             foreach($mensagens as $ms){
                 unset($_SESSION[$ms]);
         }
-            $_SESSION['item_modificar'] = $item;  
-            header('Location: ../view/templates/consultar_item.php');
-            exit;
+        $_SESSION['item_modificar'] = $item;  
+        header('Location: ../view/templates/consultar_item.php');
+        exit;
     }
 }
 ?>

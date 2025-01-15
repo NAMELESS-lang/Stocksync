@@ -82,13 +82,19 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
                     $_SESSION['login'] = 'Cpf ou senha incorretos!';
                     header('Location: ../view/templates/login.php');
                     exit;
-                }elseif(gettype($dados) == 'string'){
+                }elseif(gettype($dados) == 'string'){ // Se voltar uma mensagem da função busca_cpf_validar(), envia para o login e imprime a mensagem
                     $_SESSION['login'] = $dados;
                     header('Location: ../view/templates/login.php');
                     exit;
                 }else{
                     $user = new Usuario($dados['nome'],$dados['cpf'],$dados['funcao'],$dados['grupo']);
                     $user->set_id($dados['id']);
+                    if($user->get_grupo() == 'gerente_de_estoque'){
+                        $_SESSION['user'] = serialize($user);
+                        $_SESSION['logado'] = true;
+                        header('Location: ../view/templates/inicio_gerente.php');
+                        exit; 
+                    }
                     $_SESSION['user'] = serialize($user);
                     $_SESSION['logado'] = true;
                     header('Location: ../view/templates/inicio.php');

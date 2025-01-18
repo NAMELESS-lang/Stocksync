@@ -177,7 +177,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             exit;
         }
 
-        }elseif($_POST['atualizar_item']){
+        }elseif(isset($_POST['atualizar_item'])){
             try{
                 $usuario = unserialize($_SESSION['user']);
                 $item_modificar = $_SESSION['item_modificar'];
@@ -218,8 +218,43 @@ if($_SERVER['REQUEST_METHOD'] == "POST"){
             header('Location: ../view/templates/erro.php');
             exit;
         }
+
+
+        }elseif(isset($_POST['relatorio'])){
+            try{
+                $alt_db = new Alteracoes_db; 
+                $item_db = new Item_db;
+                $user = new Usuario_db;
+                if($_POST['pesq_por'] == 'Nome Do Usuário'){
+
+                    $_POST['item_pesq'] = filter_var($_POST['item_pesq'],FILTER_SANITIZE_SPECIAL_CHARS);
+                    $id_user = $user->usuario_nome($_POST['item_pesq']);
+                    $dados = $alt_db->gera_relatorio_user($_POST['pesq_por'],$id_user);
+                    $user = $item_db->buscar_user_id($dados['usuario_id']);
+                    $usuario = new Usuario($user['nome'],$user['cpf'],$user['funcao'],$user['grupo']);
+                    $dados['usuario_id'] = serialize($usuario);
+                    $dados['codigo_barra_item'] = $item_db->buscar_item_codigo_barra($dados['codigo_barra_item']);
+                    $_SESSION['relatorio_menssagem'] = 'Alterações encontradas com sucesso!';
+                    $_SESSION['alteracao'] = $dados;
+                    header('Location: ../view/templates/alteracoes.php');
+                    exit;
+                }elseif($_POST['pesq_por'] == 'CPF'){
+        
+                }elseif($_POST['pesq_por'] == 'Nome do Item'){
+
+                }elseif($_POST['pesq_por']=='Código de Barras'){
+
+                }
+        }catch(Exception $e){
+            $erro = new Erro('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
         }
-}elseif($_SERVER['REQUEST_METHOD'] == "GET"){
+    }
+}
+
+elseif($_SERVER['REQUEST_METHOD'] == "GET"){
     if(isset($_GET['atualizar_relatorios'])){
         $user = unserialize($_SESSION['user']);
         $_SESSION['atualizacao_relatorios_menssagem'] = 'Relatórios atualizados com sucesso!';

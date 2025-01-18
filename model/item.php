@@ -90,7 +90,7 @@ class Item{
 
     public function retorna_array_buscado_db(){
         return ['Código de barras'=> $this->codigo_barra, 'nome do item' => $this->nome_item,'data de validade' => $this->data_validade,'categoria' => $this->categoria,
-        'marca' => $this->marca, 'quantidade' => $this->quantidade, 'peso' => $this->peso,'valor' => $this->valor, 'Cadastrador' => $this->id_cadastrador];
+        'marca' => $this->marca, 'quantidade' => $this->quantidade, 'peso/volume' => $this->peso,'valor' => $this->valor, 'Cadastrador' => $this->id_cadastrador];
     }
 
 
@@ -145,7 +145,7 @@ class Item{
 
     // Usado nos campos das tabelas que são impressas
     static public function retorna_titulos_campos(){
-        return ['código de barras','nome do item','data de validade','categoria','marca','quantidade','peso','valor','cadastrador'];
+        return ['código de barras','nome do item','data de validade','categoria','marca','quantidade','peso/volume','valor','cadastrador'];
     }
 }
 
@@ -172,8 +172,8 @@ class Item_db{
             $statement->bindValue('id_cadastrador',$item->get_id_cadastrador());
             $statement->execute();
             
-            $statement = $pdo->prepare('INSERT INTO alteracoes (usuario_id,codigo_barra_item,data_acao,hora_acao)
-                                        VALUES(:usuario_id,:codigo_barra_item,:data_acao,:hora_acao)');
+            $statement = $pdo->prepare('INSERT INTO alteracoes (usuario_id,codigo_barra_item,data_acao,hora_acao,acao)
+                                        VALUES(:usuario_id,:codigo_barra_item,:data_acao,:hora_acao,"Cadastrado")');
             $statement->bindValue('usuario_id',$user->get_id());
             $statement->bindValue('codigo_barra_item',$item->get_codigo_barra());
             $statement->bindValue('data_acao',$data_atual->format('Y-m-d'));
@@ -226,11 +226,11 @@ class Item_db{
             $dados = $statement->fetch(PDO::FETCH_ASSOC);
             return $dados;
         }catch(Exception $e){
-        $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
-        $_SESSION['erro'] = serialize($erro);
-        header('Location: ../view/templates/erro.php');
-        exit;
-    }
+            $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
+        }
     }
 
     public function buscar_item_nome($nome){
@@ -300,8 +300,8 @@ class Item_db{
             $statement->bindValue('codigo_barra',$item->get_codigo_barra());
             $statement->execute();
 
-            $statement = $pdo->prepare('INSERT INTO alteracoes(usuario_id,codigo_barra_item,data_acao, hora_acao) 
-            VALUES(:usuario_id,:codigo_barra_item,:data_acao, :hora_acao)');
+            $statement = $pdo->prepare('INSERT INTO alteracoes(usuario_id,codigo_barra_item,data_acao, hora_acao,acao) 
+            VALUES(:usuario_id,:codigo_barra_item,:data_acao, :hora_acao,"Atualização")');
             $statement->bindValue('usuario_id',$user->get_id());
             $statement->bindValue('codigo_barra_item',$item->get_codigo_barra());
             $statement->bindValue('data_acao',$data_atual->format('Y-m-d'));

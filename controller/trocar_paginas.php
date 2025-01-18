@@ -55,7 +55,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET"){
         foreach($mensagens as $ms){
             unset($_SESSION[$ms]);
         }   
-        header('Location: ../view/templates/relatorios.php');
+        header('Location: ../view/templates/alteracoes.php');
         exit;
     }
     elseif(isset($_GET['atualizar_item'])){

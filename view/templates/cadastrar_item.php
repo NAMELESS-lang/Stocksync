@@ -4,7 +4,7 @@ ini_set('error_reporting', E_ALL);
 require_once('../../controller/security/logado.php');
 require_once('../../model/item.php'); 
 require_once('../../model/user.php');
-$unidades = ['g', 'kg', 't'];
+$unidades = ['g', 'kg', 't','ml','l'];
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -35,7 +35,7 @@ $unidades = ['g', 'kg', 't'];
         <label for="marca">Marca: </label>
         <input type="text" name="marca" placeholder="Marca" required>
 
-        <label for="peso">Peso:</label>
+        <label for="peso">Peso/Volume:</label>
         <div class="div_peso">
             <select name="peso" required>
                 <?php foreach($unidades as $un): ?>
@@ -44,7 +44,7 @@ $unidades = ['g', 'kg', 't'];
             </select>
 
             <label class="peso_label" for="peso_valor"></label>
-            <input class="peso_input" type="number" name="peso_valor" min="0" placeholder="Peso" required>
+            <input class="peso_input" type="number" name="peso_valor" min="0" placeholder="Peso/Volume" required>
         </div>
 
         <label for="quantidade">Quantidade: </label>

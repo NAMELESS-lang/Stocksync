@@ -63,7 +63,7 @@ $relatorios = new Relatorios();
                                 endforeach;
                                 echo '</tr>';
                         }else{
-                            echo '<tr><td>Não há itens para mostrar</td></tr>';
+                            echo '<tr> <td colspan = "5">Não há itens para mostrar</td></tr>';
                         }?>
                     </tbody>
                 </table>
@@ -98,7 +98,7 @@ $relatorios = new Relatorios();
                                 endforeach;
                                 echo '</tr>';
                          }else{
-                            echo '<tr> <td>Não há itens para mostrar</td></tr>';
+                            echo '<tr> <td colspan = "5">Não há itens para mostrar</td></tr>';
                          }?>
                     </tbody>
                 </table>

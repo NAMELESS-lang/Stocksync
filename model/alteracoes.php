@@ -33,20 +33,75 @@ class Alteracoes{
 
     public function getFinal(){ return $this->final;}
 
-
-    // demais funções
-
-    public function next(){
-        // esta função realiza a pequisa da próxima sequencia de alterações
+    static public function colunas_tabela(){
+        return ['Usuário','Codigo de barras','Data da ação','Hora da ação','Ação realizada'];
     }
 
-    public function voltar(){
-        // esta função realiza a pequisa retorna sequencia de alterações já mostradas anteriormente
-    }
 }
 
 
 Class Alteracoes_db{
+    public function gera_relatorio_item($categoria, $valor){
+        try{
+            global $pdo;
+            if($categoria == 'Código de Barras'){
+                $query = 'SELECT * FROM alteraçoes WHERE codigo_barra = :codigo_barra';
+                $statement = $pdo->prepare($query);
+                $statement->bindValue('codigo_barra',$valor);
+                $statement->execute();
+                $dados = $statement->fetchAll();
+                return $dados;
+
+            }elseif($categoria == 'Nome do Item'){
+                $query = 'SELECT * FROM alteracoes WHERE nome_item = :nome_item';
+                $statement = $pdo->prepare($query);
+                $statement->bindValue('nome_item',$valor);
+                $statement->execute();
+                $dados = $statement->fetchAll();
+                return $dados;
+            
+            }else{
+                throw Exception('Categoria inválida');
+            }
+        }
+        catch(Exception $e){
+            $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
+        }
+    }
+
+    public function gera_relatorio_user($categoria, $valor){
+        try{
+            global $pdo;
+            if($categoria == 'Nome Do Usuário'){
+                $query = 'SELECT * FROM alteracoes WHERE usuario_id = :usuario_id';
+                $statement = $pdo->prepare($query);
+                $statement->bindValue('usuario_id',$valor);
+                $statement->execute();
+                $dados = $statement->fetchAll();
+                return $dados;
+
+            }elseif($categoria == 'CPF'){
+                $query = 'SELECT * FROM alteracoes WHERE cpf = :cpf';
+                $statement = $pdo->prepare($query);
+                $statement->bindValue('cpf',$valor);
+                $statement->execute();
+                $dados = $statement->fetchAll();
+                return $dados;
+            
+            }else{
+                throw Exception('Categoria inválida');
+            }
+        }
+        catch(Exception $e){
+            $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
+        }
+    }
 }
 
 ?>

@@ -6,7 +6,7 @@ ini_set('display_errors', 1);
 
 // Define o nível de erros a serem reportados (todos os tipos de erros)
 error_reporting(E_ALL);
-$unidades = ['g', 'kg', 't'];
+$unidades = ['g', 'kg', 't','ml','l'];
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -42,7 +42,7 @@ $unidades = ['g', 'kg', 't'];
          <label for="marca">Marca: </label>
          <input type="text" name="marca"  value='<?= $item['marca'] ?>' required>
  
-         <label for="peso">Peso:</label>
+         <label for="peso">Peso/Volume:</label>
          <div class="div_peso">
              <select name="peso" required>
                  <?php foreach($unidades as $un): ?>

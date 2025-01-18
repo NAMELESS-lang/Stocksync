@@ -28,6 +28,7 @@ usuario_id INTEGER NOT NULL,
 codigo_barra_item VARCHAR(10) NOT NULL,
 data_acao DATE,
 hora_acao TIME,
+acao VARCHAR(40),
 FOREIGN KEY(usuario_id) REFERENCES users(id),
 FOREIGN KEY(codigo_barra_item) REFERENCES item(codigo_barra)
 );

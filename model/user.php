@@ -119,6 +119,22 @@ class Usuario_db{
             }
     }
 
+    public function usuario_nome($nome){
+        try{
+            global $pdo;
+            $statement = $pdo->prepare('SELECT * FROM users WHERE nome = :nome');
+            $statement->bindValue('nome', $nome);
+            $statement->execute();
+            $dados = $statement->fetch();
+            return $dados['id'];
+        }catch (Exception $e){
+            $erro = new Erros('',$e->getMessage(), $e->getFile(), $e->getLine());
+            $_SESSION['erro'] = serialize($erro);
+            header('Location: ../view/templates/erro.php');
+            exit;
+            }
+    }
+
 
 
     public function cadastrar_user(Usuario $user,$senha){
